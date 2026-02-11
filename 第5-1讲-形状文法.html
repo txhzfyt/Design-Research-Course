@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第5-1讲：形状文法 - 设计研究与创新方法</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        .presentation-container {
+            width: 100%;
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .course-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .course-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #2c3e50;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .instructor-info {
+            font-size: 1rem;
+            color: #7f8c8d;
+            margin-top: 0.3rem;
+        }
+
+        .progress-container {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .slide-counter {
+            font-size: 1rem;
+            color: #2c3e50;
+            font-weight: 600;
+            min-width: 70px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            text-align: center;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+            animation: backgroundFloat 20s ease-in-out infinite;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        @keyframes backgroundFloat {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+                opacity: 1;
+            }
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+                opacity: 0.8;
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 20px 120px 20px;
+            min-height: calc(100vh - 120px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 20px 0;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: none;
+            animation: slideIn 0.6s ease-out;
+            transform: translateY(0);
+            transition: all 0.3s ease;
+        }
+
+        .slide.active {
+            display: block;
+            animation: slideInActive 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .slide:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInActive {
+            0% {
+                opacity: 0;
+                transform: translateY(50px) scale(0.95);
+            }
+            60% {
+                opacity: 0.8;
+                transform: translateY(-10px) scale(1.02);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .slide h1 {
+            color: #4a5568;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-align: center;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: titleGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            from {
+                filter: drop-shadow(0 0 5px rgba(102, 126, 234, 0.3));
+            }
+            to {
+                filter: drop-shadow(0 0 15px rgba(118, 75, 162, 0.5));
+            }
+        }
+
+        .slide h2 {
+            color: #2d3748;
+            font-size: 1.8em;
+            margin-bottom: 25px;
+            border-left: 4px solid #667eea;
+            padding-left: 20px;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide h2::before {
+            content: '';
+            position: absolute;
+            left: -4px;
+            top: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            animation: borderSlide 2s ease-in-out infinite;
+        }
+
+        @keyframes borderSlide {
+            0%, 100% {
+                transform: scaleY(1);
+            }
+            50% {
+                transform: scaleY(1.2);
+            }
+        }
+
+        .slide h3 {
+            color: #4a5568;
+            font-size: 1.4em;
+            margin: 20px 0 15px 0;
+            font-weight: 600;
+        }
+
+        .slide p, .slide li {
+            line-height: 1.8;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            color: #2d3748;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide ul, .slide ol {
+            margin-left: 30px;
+            margin-bottom: 20px;
+        }
+
+        .slide li {
+            margin-bottom: 10px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .slide li:hover {
+            transform: translateX(5px);
+            color: #667eea;
+        }
+
+        .content-box {
+            background: linear-gradient(135deg, #f7fafc, #edf2f7);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .content-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(102, 126, 234, 0.05), transparent);
+            transform: rotate(45deg);
+            transition: all 0.6s ease;
+            opacity: 0;
+        }
+
+        .content-box:hover::before {
+            animation: shimmer 1.5s ease-in-out;
+        }
+
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%) translateY(-100%) rotate(45deg);
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(100%) translateY(100%) rotate(45deg);
+                opacity: 0;
+            }
+        }
+
+        .content-box:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #fed7d7, #feb2b2);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #e53e3e;
+            box-shadow: 0 5px 15px rgba(229, 62, 62, 0.1);
+            transition: all 0.3s ease;
+            animation: pulseGlow 4s ease-in-out infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% {
+                box-shadow: 0 5px 15px rgba(229, 62, 62, 0.1);
+            }
+            50% {
+                box-shadow: 0 8px 25px rgba(229, 62, 62, 0.2);
+            }
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #c6f6d5, #9ae6b4);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #38a169;
+            box-shadow: 0 5px 15px rgba(56, 161, 105, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .practice-box {
+            background: linear-gradient(135deg, #bee3f8, #90cdf4);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #3182ce;
+            box-shadow: 0 5px 15px rgba(49, 130, 206, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #fef5e7, #fed7aa);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #dd6b20;
+            box-shadow: 0 5px 15px rgba(221, 107, 32, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            animation: tableSlideIn 0.8s ease-out;
+        }
+
+        @keyframes tableSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .comparison-table th {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            position: relative;
+        }
+
+        .comparison-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: #f7fafc;
+        }
+
+        .comparison-table tr:hover {
+            background: rgba(102, 126, 234, 0.05);
+            transform: scale(1.01);
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.95), rgba(118, 75, 162, 0.95));
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            z-index: 1000;
+            box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50px;
+            padding: 15px 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            color: #4a5568;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .nav-btn:hover::before {
+            left: 100%;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 1);
+            color: #667eea;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .nav-btn:active {
+            transform: translateY(-1px) scale(1.02);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .nav-btn:disabled:hover {
+            background: rgba(255, 255, 255, 0.9);
+            color: #4a5568;
+            transform: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            z-index: 1001;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s ease;
+            width: 0%;
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 20px;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6));
+            animation: progressShine 2s ease-in-out infinite;
+        }
+
+        @keyframes progressShine {
+            0%, 100% {
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+        .slide-menu {
+            position: fixed;
+            top: 140px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+            animation: menuSlideIn 0.3s ease-out;
+        }
+
+        @keyframes menuSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+        }
+
+        .slide-menu.active {
+            display: block;
+        }
+
+        .slide-menu h3 {
+            margin-bottom: 15px;
+            color: #4a5568;
+            font-size: 1.2em;
+        }
+
+        .slide-menu ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .slide-menu li {
+            margin-bottom: 8px;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+            position: relative;
+        }
+
+        .slide-menu li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 0;
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 8px;
+            transition: width 0.3s ease;
+            z-index: -1;
+        }
+
+        .slide-menu li:hover::before {
+            width: 100%;
+        }
+
+        .slide-menu li:hover {
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .slide-menu li.current {
+            background: rgba(102, 126, 234, 0.2);
+            font-weight: 600;
+        }
+
+        .menu-toggle {
+            position: fixed;
+            top: 140px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            font-size: 20px;
+            color: #4a5568;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+
+        .menu-toggle:hover {
+            background: rgba(102, 126, 234, 0.9);
+            color: white;
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .course-title {
+                font-size: 1.1rem;
+            }
+
+            .container {
+                padding: 10px 10px 100px 10px;
+            }
+
+            .slide {
+                padding: 20px;
+                margin: 10px 0;
+            }
+
+            .slide h1 {
+                font-size: 2em;
+            }
+
+            .slide h2 {
+                font-size: 1.5em;
+            }
+
+            .navigation {
+                padding: 15px;
+                gap: 10px;
+            }
+
+            .nav-btn {
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+
+            .slide-menu {
+                right: 10px;
+                top: 160px;
+                max-width: calc(100vw - 40px);
+            }
+
+            .menu-toggle {
+                right: 10px;
+                top: 160px;
+            }
+        }
+
+        .page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            animation: loaderFadeOut 1s ease-in-out 2s forwards;
+        }
+
+        .loader-content {
+            text-align: center;
+            color: white;
+        }
+
+        .loader-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes loaderFadeOut {
+            to {
+                opacity: 0;
+                visibility: hidden;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #5a6fd8, #6b4190);
+        }
+    </style>
+</head>
+<body>
+    <div class="page-loader" id="pageLoader">
+        <div class="loader-content">
+            <div class="loader-spinner"></div>
+            <h3>加载中...</h3>
+        </div>
+    </div>
+
+    <div class="presentation-container">
+        <header class="header">
+            <div class="course-info">
+                <div class="course-title">设计研究与创新方法 - 第5-1讲</div>
+                <div class="instructor-info">授课教师：唐星-助理教授 | 西南交通大学设计艺术学院 | 主题：形状文法</div>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="slide-counter" id="slideCounter">1 / 12</div>
+            </div>
+        </header>
+
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
+
+        <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+
+        <div class="slide-menu" id="slideMenu">
+            <h3>课程导航</h3>
+            <ul>
+                <li onclick="goToSlide(0)">1. 课程主题与导览</li>
+                <li onclick="goToSlide(1)">2. 概念与核心理念</li>
+                <li onclick="goToSlide(2)">3. 形状文法分析流程</li>
+                <li onclick="goToSlide(3)">4. 加法操作</li>
+                <li onclick="goToSlide(4)">5. 减法操作</li>
+                <li onclick="goToSlide(5)">6. 变形操作</li>
+                <li onclick="goToSlide(6)">7. 组合操作</li>
+                <li onclick="goToSlide(7)">8. 置换与分割操作</li>
+                <li onclick="goToSlide(8)">9. 对称与迭代操作</li>
+                <li onclick="goToSlide(9)">10. 案例总述：广州地铁</li>
+                <li onclick="goToSlide(10)">11. 文化元素提取</li>
+                <li onclick="goToSlide(11)">12. 设计推演与效果</li>
+            </ul>
+        </div>
+
+        <div class="container">
+            <!-- 1. 课程主题与导览 -->
+            <div class="slide active">
+                <h1>形状文法</h1>
+                <div class="content-box">
+                    <h2>课程定位</h2>
+                    <p>形状文法作为规则驱动的形态生成系统，通过形式语法解构设计元素的组合逻辑。这一分析方法体现了"逻辑先于形式"的理性设计观，能够为产品设计等领域的创新提供结构化推演框架。</p>
+                </div>
+                <div class="highlight-box">
+                    <h3>学习目标</h3>
+                    <ul>
+                        <li>理解形状文法的概念与核心理念</li>
+                        <li>掌握形状文法的八种基本操作</li>
+                        <li>学会形状文法分析的一般流程</li>
+                        <li>完成广州地铁列车设计案例分析</li>
+                    </ul>
+                </div>
+                <div class="example-box">
+                    <h3>核心价值</h3>
+                    <p>解决形态创新中的可计算性问题，通过形式化规则实现设计创意的系统化生成。</p>
+                </div>
+            </div>
+
+            <!-- 2. 概念与核心理念 -->
+            <div class="slide">
+                <h1>概念与核心理念</h1>
+                <div class="content-box">
+                    <h2>概念</h2>
+                    <p>形状文法（Shape Grammars）是一种形式化的设计生成系统，它的核心思想是用一套明确的规则来描述和生成某一类设计风格或"语言"中的视觉形式（主要是二维或三维的形状）。</p>
+                </div>
+                <div class="highlight-box">
+                    <h3>核心特征</h3>
+                    <ul>
+                        <li><strong>形式化规则：</strong>通过明确的规则描述设计风格</li>
+                        <li><strong>视觉形式：</strong>主要针对二维或三维形状</li>
+                        <li><strong>设计生成：</strong>系统性地生成新形态</li>
+                        <li><strong>创意激发：</strong>既保证逻辑性又激发无限可能</li>
+                    </ul>
+                </div>
+                <div class="practice-box">
+                    <h3>类比理解</h3>
+                    <p>形状文法就像一种专门为视觉设计定制的语法。就像语言语法用规则组合单词生成句子一样，形状文法用规则组合或变换基本形状来生成符合特定风格的设计方案。</p>
+                </div>
+                <div class="warning-box">
+                    <h3>应用范围</h3>
+                    <p>广泛应用于建筑设计、产品设计、视觉艺术、工业设计等领域。</p>
+                </div>
+            </div>
+
+            <!-- 3. 形状文法分析流程 -->
+            <div class="slide">
+                <h1>形状文法分析的一般流程</h1>
+                <div class="content-box">
+                    <h2>核心方法</h2>
+                    <p>形状文法的核心方法是一套基于规则的形式化生成系统，它通过定义、匹配和应用视觉规则来迭代地生成或转换设计。</p>
+                </div>
+                <div class="highlight-box">
+                    <h3>流程步骤</h3>
+                    <ol>
+                        <li><strong>基础形状定义：</strong>确定基本形态作为"原料"</li>
+                        <li><strong>规则制定：</strong>定义明确的操作规则</li>
+                        <li><strong>规则匹配：</strong>识别可应用规则的位置</li>
+                        <li><strong>规则应用：</strong>执行规则进行形态转换</li>
+                        <li><strong>迭代生成：</strong>重复应用规则生成复杂形态</li>
+                    </ol>
+                </div>
+                <div class="example-box">
+                    <h3>规则形式</h3>
+                    <p>规则通常表示为"前提形状→目标形状"的形式，直接对形态进行修改或重组。</p>
+                </div>
+            </div>
+
+            <!-- 4. 加法操作 -->
+            <div class="slide">
+                <h1>加法操作（Addition）</h1>
+                <div class="content-box">
+                    <h2>操作定义</h2>
+                    <p>通过在现有形状上添加新元素扩展形态，强调"增量式生成"。</p>
+                </div>
+                <div class="highlight-box">
+                    <h3>操作逻辑</h3>
+                    <p>在基础形状的边缘、内部或外部，添加与原形态相关联的新形状（如点、线、面、体）。</p>
+                </div>
+                <div class="example-box">
+                    <h3>应用示例</h3>
+                    <ul>
+                        <li><strong>建筑设计：</strong>在矩形墙体上添加方形窗户（基础形状 + 功能元素）</li>
+                        <li><strong>产品设计：</strong>在圆柱体杯身顶部添加环形杯口（基础形态 + 结构元素）</li>
+                        <li><strong>视觉设计：</strong>在圆形标志周围添加装饰性元素</li>
+                    </ul>
+                </div>
+                <div class="practice-box">
+                    <h3>设计要点</h3>
+                    <p>添加的元素应与原形态保持协调，考虑功能性和美学性的统一。</p>
+                </div>
+            </div>
+
+            <!-- 5. 减法操作 -->
+            <div class="slide">
+                <h1>减法操作（Subtraction）</h1>
+                <div class="content-box">
+                    <h2>操作定义</h2>
+                    <p>通过从现有形状中去除部分元素简化或重构形态，强调"削减式生成"。</p>
+                </div>
+                <div class="highlight-box">
+                    <h3>操作逻辑</h3>
+                    <p>根据规则删除基础形状的某一部分（如边缘、角落、内部区域），形成缺口、镂空或凹陷。</p>
+                </div>
+                <div class="example-box">
+                    <h3>应用示例</h3>
+                    <ul>
+                        <li><strong>工业设计：</strong>从正方体包装盒的侧面挖去半圆形提手（功能导向的减法）</li>
+                        <li><strong>视觉艺术：</strong>从圆形画布边缘裁剪出不规则缺口（美学导向的减法）</li>
+                        <li><strong>建筑设计：</strong>在实体墙面上创建镂空图案</li>
+                    </ul>
+                </div>
+                <div class="practice-box">
+                    <h3>设计价值</h3>
+                    <p>减法操作可以创造功能性缺口，也能通过负空间增强视觉层次和美感。</p>
+                </div>
+            </div>
+
+            <!-- 6. 变形操作 -->
+            <div class="slide">
+                <h1>变形操作（Deformation）</h1>
+                <div class="content-box">
+                    <h2>操作定义</h2>
+                    <p>通过改变形状的比例、曲率、角度等属性调整形态，强调"形态的动态调整"。</p>
+                </div>
+                <div class="highlight-box">
+                    <h3>操作逻辑</h3>
+                    <p>对基础形状进行拉伸、压缩、弯曲、扭曲、倾斜等物理性变形，保留原形态的核心特征但改变细节。</p>
+                </div>
+                <div class="example-box">
+                    <h3>应用示例</h3>
+                    <ul>
+                        <li><strong>建筑设计：</strong>将直线型屋顶弯曲为弧形（功能适配性变形）</li>
+                        <li><strong>产品设计：</strong>将直角手机边框打磨为圆角（人机工程学变形）</li>
+                        <li><strong>视觉设计：</strong>将规则几何形扭曲为有机形态</li>
+                    </ul>
+                </div>
+                <div class="practice-box">
+                    <h3>变形原则</h3>
+                    <p>变形应服务于功能和美学需求，保持形态的可识别性和实用性。</p>
+                </div>
+            </div>
+
+            <!-- 7. 组合操作 -->
+            <div class="slide">
+                <h1>组合操作（Combination）</h1>
+                <div class="content-box">
+                    <h2>操作定义</h2>
+                    <p>通过将多个独立形状按规则关联形成复合形态，强调"元素的协同关系"。</p>
+                </div>
+                <div class="highlight-box">
+                    <h3>操作逻辑</h3>
+                    <p>定义形状之间的位置（如并列、叠加、嵌套）、方向（如垂直、倾斜）或连接方式（如相切、相交），组合成新整体。</p>
+                </div>
+                <div class="example-box">
+                    <h3>应用示例</h3>
+                    <ul>
+                        <li><strong>家具设计：</strong>将长方形桌面与4个柱状桌腿垂直组合成桌子（功能结构组合）</li>
+                        <li><strong>视觉设计：</strong>将多个三角形按放射状排列成星形图案（美学组合）</li>
+                        <li><strong>建筑设计：</strong>将不同功能模块组合成复合建筑</li>
+                    </ul>
+                </div>
+                <div class="practice-box">
+                    <h3>组合原则</h3>
+                    <p>组合应考虑元素间的功能关系和视觉协调，形成有机统一的整体。</p>
+                </div>
+            </div>
+
+            <!-- 8. 置换与分割操作 -->
+            <div class="slide">
+                <h1>置换与分割操作</h1>
+                <div class="content-box">
+                    <h2>置换操作（Replacement）</h2>
+                    <p>通过用新形状替换原有形状实现形态转换，强调"元素的迭代更新"。</p>
+                    <ul>
+                        <li><strong>操作逻辑：</strong>识别基础形状中的特定单元，用符合规则的新形状替换它</li>
+                        <li><strong>应用示例：</strong>图标设计中，将"设置"图标中的圆形按钮置换为六边形（风格化置换）</li>
+                    </ul>
+                </div>
+                <div class="highlight-box">
+                    <h2>分割操作（Division）</h2>
+                    <p>通过将整体形状拆解为子形状细化形态，强调"从整体到局部的层次生成"。</p>
+                    <ul>
+                        <li><strong>操作逻辑：</strong>按规则（如对称线、比例线、网格）将基础形状分割为多个子单元</li>
+                        <li><strong>应用示例：</strong>平面设计中，将矩形海报按黄金比例分割为标题区、内容区和留白区</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 9. 对称与迭代操作 -->
+            <div class="slide">
+                <h1>对称与迭代操作</h1>
+                <div class="content-box">
+                    <h2>对称操作（Symmetry）</h2>
+                    <p>基于对称原理（如轴对称、中心对称）生成形态，强调"秩序感与平衡感"。</p>
+                    <ul>
+                        <li><strong>操作逻辑：</strong>以某条轴线或某个点为中心，复制并镜像基础形状</li>
+                        <li><strong>应用示例：</strong>传统纹样设计中，以中轴线为基准，对称排列花卉图案</li>
+                    </ul>
+                </div>
+                <div class="highlight-box">
+                    <h2>迭代与递归操作（Iteration & Recursion）</h2>
+                    <p>通过重复应用规则生成复杂形态，强调"简单规则→复杂结果"的涌现性。</p>
+                    <ul>
+                        <li><strong>迭代：</strong>对同一形状多次应用相同规则</li>
+                        <li><strong>递归：</strong>对形状的子单元应用相同规则</li>
+                        <li><strong>应用示例：</strong>分形几何中，重复操作生成雪花状分形</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 10. 案例总述：广州地铁 -->
+            <div class="slide">
+                <h1>案例总述：广州地铁6号线列车外观设计</h1>
+                <div class="content-box">
+                    <h2>案例背景</h2>
+                    <p>广州地铁6号线列车外观设计采用融合文化意象和形状文法的设计方法，旨在将广州独特的文化元素融入列车外观，提升其地域文化特性。</p>
+                </div>
+                <div class="highlight-box">
+                    <h3>设计目标</h3>
+                    <ul>
+                        <li>提取广州地域文化特征元素</li>
+                        <li>运用形状文法进行形态推演</li>
+                        <li>创造具有文化认同感的列车外观</li>
+                        <li>建立文化意象与形态设计的桥梁</li>
+                    </ul>
+                </div>
+                <div class="example-box">
+                    <h3>研究方法</h3>
+                    <p>首先对广州的文化元素进行收集与特征提取，从物质层、制度层和精神层三方面辨识选择文化元素，然后在设计软件中提取特征线条，作为形状文法推演的基础构成元素。</p>
+                </div>
+            </div>
+
+            <!-- 11. 文化元素提取 -->
+            <div class="slide">
+                <h1>文化元素提取</h1>
+                <div class="content-box">
+                    <h2>广州文化元素选择</h2>
+                    <p>从物质层、制度层和精神层三方面辨识选择文化元素：</p>
+                    <ul>
+                        <li><strong>五羊：</strong>广州市又被称为羊城，其历史传说追溯到西周</li>
+                        <li><strong>舞狮：</strong>广州传统风俗文化之一，庆典活动的重要元素</li>
+                        <li><strong>画眉鸟：</strong>广州市市鸟，体型小巧，性格活泼</li>
+                        <li><strong>木棉花：</strong>广州市市花，色彩鲜艳，代表朝气蓬勃</li>
+                        <li><strong>广州大剧院：</strong>广州标志性建筑，不规则几何形体设计</li>
+                    </ul>
+                </div>
+                <div class="content-box">
+                    <h2>表5-1 广州文化元素提取</h2>
+                    <img src="图片库/表5-1 五羊.png" alt="五羊" style="width:18%; margin:1%;" />
+                    <img src="图片库/表5-1 舞狮.png" alt="舞狮" style="width:18%; margin:1%;" />
+                    <img src="图片库/表5-1 画眉鸟.png" alt="画眉鸟" style="width:18%; margin:1%;" />
+                    <img src="图片库/表5-1 木棉花.png" alt="木棉花" style="width:18%; margin:1%;" />
+                    <img src="图片库/表5-1 广州大剧院.png" alt="广州大剧院" style="width:18%; margin:1%;" />
+                </div>
+                <div class="highlight-box">
+                    <h3>特征线条提取</h3>
+                    <p>在Adobe Illustrator中提取特征线条，作为形状文法推演的基础构成元素。</p>
+                </div>
+            </div>
+
+            <!-- 12. 设计推演与效果 -->
+            <div class="slide">
+                <h1>设计推演与效果</h1>
+                <div class="content-box">
+                    <h2>特征曲线组合与筛选</h2>
+                    <p>筛选组合特征曲线，得到列车前脸造型特征曲线组和侧身造型特征曲线组。</p>
+                </div>
+                <div class="content-box">
+                    <h2>表5-2 广州文化元素特征线条提取</h2>
+                    <img src="图片库/表5-2 广州文化元素特征线条提取.png" alt="广州文化元素特征线条提取" style="width:100%; max-width:960px;" />
+                </div>
+                <div class="highlight-box">
+                    <h2>形状文法推演</h2>
+                    <p>在Adobe Illustrator中执行形状文法推演规则：</p>
+                    <ul>
+                        <li><strong>前脸造型：</strong>使用增删规则添加外轮廓曲线，通过拉伸使造型棱角分明</li>
+                        <li><strong>侧身造型：</strong>通过置换曲线、调整比例、删减与增加曲线等操作推演出新造型</li>
+                    </ul>
+                </div>
+                <div class="content-box">
+                    <h2>设计过程展示</h2>
+                    <img src="图片库/图5-2 前脸造型关键特征线条选取与变换.png" alt="前脸造型关键特征线条选取与变换" style="width:48%; margin-right:2%;" />
+                    <img src="图片库/图5-3 侧身造型关键特征线条选取与变.png" alt="侧身造型关键特征线条选取与变换" style="width:48%;" />
+                </div>
+                <div class="example-box">
+                    <h2>最终设计方案</h2>
+                    <img src="图片库/图5-4融合文化意向的地铁列车最终设计方案.png" alt="融合文化意向的地铁列车最终设计方案" style="width:100%; max-width:960px;" />
+                    <p>将推演得到的前脸造型和侧身造型导入三维建模软件Rhino中建立三维模型，结合广州地铁6号线典型的紫红色进行涂装设计，并运用Keyshot和Photoshop进行渲染和效果图制作。</p>
+                </div>
+                <div class="practice-box">
+                    <h3>设计价值</h3>
+                    <ul>
+                        <li>有效提取符合旅客认知的广州文化意象元素</li>
+                        <li>将文化元素融入地铁列车外观方案</li>
+                        <li>使广州地铁6号线列车成为城市文化的载体</li>
+                        <li>增强城市居民对地铁列车的文化认同</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">← 上一页</button>
+            <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">下一页 →</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        const progressFill = document.querySelector('.progress-fill');
+        const slideMenu = document.getElementById('slideMenu');
+        const menuItems = slideMenu.querySelectorAll('li');
+        const slideCounter = document.getElementById('slideCounter');
+
+        function updateSlide() {
+            slides.forEach((slide, index) => {
+                slide.classList.remove('active');
+                if (index === currentSlide) {
+                    slide.classList.add('active');
+                    slide.style.animation = 'slideInActive 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                }
+            });
+
+            const progress = ((currentSlide + 1) / totalSlides) * 100;
+            progressFill.style.width = progress + '%';
+
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+
+            menuItems.forEach((item, index) => {
+                item.classList.remove('current');
+                if (index === currentSlide) {
+                    item.classList.add('current');
+                }
+            });
+
+            if (slideCounter) {
+                slideCounter.textContent = `${currentSlide + 1} / ${totalSlides}`;
+            }
+        }
+
+        function changeSlide(direction) {
+            const newSlide = currentSlide + direction;
+            if (newSlide >= 0 && newSlide < totalSlides) {
+                slides[currentSlide].style.animation = 'slideTransition 0.4s ease-in-out';
+                
+                setTimeout(() => {
+                    currentSlide = newSlide;
+                    updateSlide();
+                }, 200);
+            }
+        }
+
+        function goToSlide(slideIndex) {
+            if (slideIndex >= 0 && slideIndex < totalSlides) {
+                currentSlide = slideIndex;
+                updateSlide();
+                toggleMenu();
+            }
+        }
+
+        function toggleMenu() {
+            slideMenu.classList.toggle('active');
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') {
+                changeSlide(-1);
+            } else if (e.key === 'ArrowRight') {
+                changeSlide(1);
+            } else if (e.key === 'Escape') {
+                slideMenu.classList.remove('active');
+            }
+        });
+
+        let startX = 0;
+        let endX = 0;
+
+        document.addEventListener('touchstart', function(e) {
+            startX = e.touches[0].clientX;
+        });
+
+        document.addEventListener('touchend', function(e) {
+            endX = e.changedTouches[0].clientX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = startX - endX;
+
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    changeSlide(1);
+                } else {
+                    changeSlide(-1);
+                }
+            }
+        }
+
+        document.addEventListener('click', function(e) {
+            if (!slideMenu.contains(e.target) && !e.target.classList.contains('menu-toggle')) {
+                slideMenu.classList.remove('active');
+            }
+        });
+
+        updateSlide();
+
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                document.getElementById('pageLoader').style.display = 'none';
+                document.body.classList.add('fade-in');
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

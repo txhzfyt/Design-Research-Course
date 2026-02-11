@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>第4-4讲：TRIZ理论与模型 - 设计研究与创新方法</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'PingFang SC','Microsoft YaHei','Helvetica Neue',Arial,sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+        .presentation-container { width: 100%; min-height: 100vh; position: relative; display: flex; flex-direction: column; }
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex; justify-content: space-between; align-items: center; z-index: 100;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .course-info { display: flex; flex-direction: column; }
+        .course-title {
+            font-size: 1.4rem; font-weight: 700; color: #2c3e50;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .instructor-info { font-size: 1rem; color: #7f8c8d; margin-top: 0.3rem; }
+        .progress-container { display: flex; align-items: center; gap: 1.5rem; }
+        .slide-counter { font-size: 1rem; color: #2c3e50; font-weight: 600; min-width: 70px; background: rgba(255,255,255,0.8); padding: 0.5rem 1rem; border-radius: 20px; text-align: center; }
+        body::before {
+            content: '';
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image:
+                radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(255,255,255,0.05) 0%, transparent 50%);
+            animation: backgroundFloat 20s ease-in-out infinite; pointer-events: none; z-index: -1;
+        }
+        @keyframes backgroundFloat { 0%,100% { transform: translateY(0px) rotate(0deg); opacity: 1; } 50% { transform: translateY(-20px) rotate(180deg); opacity: 0.8; } }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px 20px 120px 20px; min-height: calc(100vh - 120px); display: flex; flex-direction: column; }
+        .slide {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px; padding: 40px; margin: 20px 0;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            display: none; animation: slideIn 0.6s ease-out; transform: translateY(0); transition: all 0.3s ease;
+        }
+        .slide.active { display: block; animation: slideInActive 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+        .slide:hover { transform: translateY(-5px); box-shadow: 0 25px 50px rgba(0,0,0,0.15); }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(30px);} to { opacity: 1; transform: translateY(0);} }
+        @keyframes slideInActive { 0% { opacity: 0; transform: translateY(50px) scale(0.95);} 60% { opacity: 0.8; transform: translateY(-10px) scale(1.02);} 100% { opacity: 1; transform: translateY(0) scale(1);} }
+        .slide h1 {
+            color: #4a5568; font-size: 2.5em; margin-bottom: 30px; text-align: center; font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            animation: titleGlow 3s ease-in-out infinite alternate;
+        }
+        @keyframes titleGlow { from { filter: drop-shadow(0 0 5px rgba(102,126,234,0.3)); } to { filter: drop-shadow(0 0 15px rgba(118,75,162,0.5)); } }
+        .slide h2 { color: #2d3748; font-size: 1.8em; margin-bottom: 25px; border-left: 4px solid #667eea; padding-left: 20px; font-weight: 600; position: relative; overflow: hidden; }
+        .slide h2::before { content: ''; position: absolute; left: -4px; top:0; width:4px; height:100%; background: linear-gradient(45deg, #667eea, #764ba2); animation: borderSlide 2s ease-in-out infinite; }
+        @keyframes borderSlide { 0%,100% { transform: scaleY(1);} 50% { transform: scaleY(1.2);} }
+        .slide h3 { color: #4a5568; font-size: 1.4em; margin: 20px 0 15px; font-weight: 600; }
+        .slide p, .slide li { line-height: 1.8; margin-bottom: 15px; font-size: 1.1em; color: #2d3748; animation: fadeInUp 0.6s ease-out; }
+        @keyframes fadeInUp { from { opacity:0; transform: translateY(20px);} to { opacity:1; transform: translateY(0);} }
+        .slide ul, .slide ol { margin-left: 30px; margin-bottom: 20px; }
+        .slide li { margin-bottom: 10px; position: relative; transition: all 0.3s ease; }
+        .slide li:hover { transform: translateX(5px); color: #667eea; }
+        .content-box { background: linear-gradient(135deg, #f7fafc, #edf2f7); border-radius: 15px; padding: 25px; margin: 20px 0; border-left: 5px solid #667eea; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: all 0.3s ease; position: relative; overflow: hidden; }
+        .content-box::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(45deg, transparent, rgba(102,126,234,0.05), transparent); transform: rotate(45deg); transition: all 0.6s ease; opacity: 0; }
+        .content-box:hover::before { animation: shimmer 1.5s ease-in-out; }
+        @keyframes shimmer { 0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); opacity: 0;} 50% { opacity: 1;} 100% { transform: translateX(100%) translateY(100%) rotate(45deg); opacity: 0;} }
+        .content-box:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .highlight-box { background: linear-gradient(135deg, #fed7d7, #feb2b2); border-radius: 15px; padding: 20px; margin: 20px 0; border-left: 5px solid #e53e3e; box-shadow: 0 5px 15px rgba(229,62,62,0.1); transition: all 0.3s ease; animation: pulseGlow 4s ease-in-out infinite; }
+        @keyframes pulseGlow { 0%,100% { box-shadow: 0 5px 15px rgba(229,62,62,0.1);} 50% { box-shadow: 0 8px 25px rgba(229,62,62,0.2);} }
+        .example-box { background: linear-gradient(135deg, #c6f6d5, #9ae6b4); border-radius: 15px; padding: 20px; margin: 20px 0; border-left: 5px solid #38a169; box-shadow: 0 5px 15px rgba(56,161,105,0.1); transition: all 0.3s ease; }
+        .practice-box { background: linear-gradient(135deg, #bee3f8, #90cdf4); border-radius: 15px; padding: 20px; margin: 20px 0; border-left: 5px solid #3182ce; box-shadow: 0 5px 15px rgba(49,130,206,0.1); transition: all 0.3s ease; }
+        .warning-box { background: linear-gradient(135deg, #fef5e7, #fed7aa); border-radius: 15px; padding: 20px; margin: 20px 0; border-left: 5px solid #dd6b20; box-shadow: 0 5px 15px rgba(221,107,32,0.1); transition: all 0.3s ease; }
+        .comparison-table { width: 100%; border-collapse: collapse; margin: 20px 0; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1); animation: tableSlideIn 0.8s ease-out; }
+        @keyframes tableSlideIn { from { opacity: 0; transform: translateY(30px);} to { opacity: 1; transform: translateY(0);} }
+        .comparison-table th { background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 15px; text-align: left; font-weight: 600; position: relative; }
+        .comparison-table td { padding: 12px 15px; border-bottom: 1px solid #e2e8f0; transition: all 0.3s ease; }
+        .comparison-table tr:nth-child(even) { background: #f7fafc; }
+        .comparison-table tr:hover { background: rgba(102,126,234,0.05); transform: scale(1.01); }
+        .navigation {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: linear-gradient(135deg, rgba(102,126,234,0.95), rgba(118,75,162,0.95));
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255,255,255,0.2);
+            padding: 20px; display: flex; justify-content: center; gap: 15px; z-index: 1000;
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.1);
+        }
+        .nav-btn {
+            background: rgba(255,255,255,0.9); border: none; border-radius: 50px; padding: 15px 25px; cursor: pointer; font-size: 16px; font-weight: 600; color: #4a5568; box-shadow: 0 5px 15px rgba(0,0,0,0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); position: relative; overflow: hidden;
+        }
+        .nav-btn::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); transition: left 0.6s ease; }
+        .nav-btn:hover::before { left: 100%; }
+        .nav-btn:hover { background: rgba(255,255,255,1); color: #667eea; transform: translateY(-3px) scale(1.05); box-shadow: 0 10px 25px rgba(102,126,234,0.3); }
+        .nav-btn:active { transform: translateY(-1px) scale(1.02); }
+        .nav-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .nav-btn:disabled:hover { background: rgba(255,255,255,0.9); color: #4a5568; transform: none; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .progress-bar { position: fixed; top: 0; left: 0; width: 100%; height: 4px; background: rgba(255,255,255,0.3); z-index: 1001; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #667eea, #764ba2); transition: width 0.3s ease; width: 0%; position: relative; }
+        .progress-fill::after { content: ''; position: absolute; top: 0; right: 0; width: 20px; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6)); animation: progressShine 2s ease-in-out infinite; }
+        @keyframes progressShine { 0%,100% { opacity: 0;} 50% { opacity: 1;} }
+        .slide-menu {
+            position: fixed; top: 140px; right: 20px; background: rgba(255,255,255,0.95);
+            border-radius: 15px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2);
+            max-height: 400px; overflow-y: auto; z-index: 1000; display: none; animation: menuSlideIn 0.3s ease-out;
+        }
+        @keyframes menuSlideIn { from { opacity:0; transform: translateX(20px) scale(0.95);} to { opacity:1; transform: translateX(0) scale(1);} }
+        .slide-menu.active { display: block; }
+        .slide-menu h3 { margin-bottom: 15px; color: #4a5568; font-size: 1.2em; }
+        .slide-menu ul { list-style: none; margin: 0; padding: 0; }
+        .slide-menu li { margin-bottom: 8px; cursor: pointer; padding: 8px 12px; border-radius: 8px; transition: all 0.3s ease; font-size: 0.9em; position: relative; }
+        .slide-menu li::before { content: ''; position: absolute; left: 0; top: 0; width: 0; height: 100%; background: linear-gradient(90deg, #667eea, #764ba2); border-radius: 8px; transition: width 0.3s ease; z-index: -1; }
+        .slide-menu li:hover::before { width: 100%; }
+        .slide-menu li:hover { color: white; transform: translateX(5px); }
+        .slide-menu li.current { background: rgba(102,126,234,0.2); font-weight: 600; }
+        .menu-toggle { position: fixed; top: 140px; right: 20px; background: rgba(255,255,255,0.9); border: none; border-radius: 50%; width: 50px; height: 50px; cursor: pointer; font-size: 20px; color: #4a5568; box-shadow: 0 5px 15px rgba(0,0,0,0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); transition: all 0.3s ease; z-index: 1001; }
+        .menu-toggle:hover { background: rgba(102,126,234,0.9); color: white; transform: scale(1.1) rotate(90deg); box-shadow: 0 8px 20px rgba(102,126,234,0.3); }
+        @media (max-width: 768px) {
+            .header { padding: 1rem; flex-direction: column; gap: 1rem; }
+            .course-title { font-size: 1.1rem; }
+            .container { padding: 10px 10px 100px 10px; }
+            .slide { padding: 20px; margin: 10px 0; }
+            .slide h1 { font-size: 2em; }
+            .slide h2 { font-size: 1.5em; }
+            .navigation { padding: 15px; gap: 10px; }
+            .nav-btn { padding: 12px 20px; font-size: 14px; }
+            .slide-menu { right: 10px; top: 160px; max-width: calc(100vw - 40px); }
+            .menu-toggle { right: 10px; top: 160px; }
+            .comparison-table td { padding: 10px; }
+        }
+        .page-loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; justify-content: center; align-items: center; z-index: 9999; animation: loaderFadeOut 1s ease-in-out 2s forwards; }
+        .loader-content { text-align: center; color: white; }
+        .loader-spinner { width: 50px; height: 50px; border: 3px solid rgba(255,255,255,0.3); border-top: 3px solid white; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px; }
+        @keyframes spin { 0% { transform: rotate(0deg);} 100% { transform: rotate(360deg);} }
+        @keyframes loaderFadeOut { to { opacity: 0; visibility: hidden; } }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(255,255,255,0.1); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: linear-gradient(135deg, #5a6fd8, #6b4190); }
+        .img-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-start; }
+        .img-row img { border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); max-width: 100%; height: auto; }
+    </style>
+</head>
+<body>
+    <div class="page-loader" id="pageLoader">
+        <div class="loader-content">
+            <div class="loader-spinner"></div>
+            <h3>加载中...</h3>
+        </div>
+    </div>
+
+    <div class="presentation-container">
+        <header class="header">
+            <div class="course-info">
+                <div class="course-title">设计研究与创新方法 - 第4-4讲</div>
+                <div class="instructor-info">授课教师：唐星-助理教授 | 西南交通大学设计艺术学院 | 主题：TRIZ理论与模型</div>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+                <div class="slide-counter" id="slideCounter">1 / 12</div>
+            </div>
+        </header>
+
+        <div class="progress-bar"><div class="progress-fill"></div></div>
+        <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+
+        <div class="slide-menu" id="slideMenu">
+            <h3>课程导航</h3>
+            <ul>
+                <li onclick="goToSlide(0)">1. 课程主题与导览</li>
+                <li onclick="goToSlide(1)">2. TRIZ概念与核心理念</li>
+                <li onclick="goToSlide(2)">3. 40项发明原则总览</li>
+                <li onclick="goToSlide(3)">4. TRIZ应用流程</li>
+                <li onclick="goToSlide(4)">5. ARIZ与服务设计应用</li>
+                <li onclick="goToSlide(5)">6. 使用流程示意</li>
+                <li onclick="goToSlide(6)">7. 案例总述：担架车设计</li>
+                <li onclick="goToSlide(7)">8. FBS：用户需求挖掘</li>
+                <li onclick="goToSlide(8)">9. 行为与结构推导</li>
+                <li onclick="goToSlide(9)">10. 矛盾冲突分析</li>
+                <li onclick="goToSlide(10)">11. 物-场分析与替代</li>
+                <li onclick="goToSlide(11)">12. 设计成果展示</li>
+            </ul>
+        </div>
+
+        <div class="container">
+            <!-- 1. 课程主题与导览 -->
+            <div class="slide active">
+                <h1>TRIZ理论与模型</h1>
+                <div class="content-box">
+                    <h2>课程定位</h2>
+                    <p>通过TRIZ揭示技术系统演化规律，将创新从偶然灵感转化为可预测、可重复的系统化过程。</p>
+                </div>
+                <div class="highlight-box">
+                    <h3>学习目标</h3>
+                    <ul>
+                        <li>理解TRIZ的来源、理论框架与核心理念</li>
+                        <li>掌握40项发明原则与应用流程</li>
+                        <li>结合FBS完成担架车创新案例的分析与呈现</li>
+                    </ul>
+                </div>
+                <div class="example-box">
+                    <h3>结构提示</h3>
+                    <ul>
+                        <li>概念 → 原则 → 流程 → ARIZ → 案例</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 2. TRIZ概念与核心理念 -->
+            <div class="slide">
+                <h1>TRIZ概念与核心理念</h1>
+                <div class="content-box">
+                    <h2>概念</h2>
+                    <p>TRIZ（发明问题解决理论）由G. S. Altshuller基于大量专利分析归纳而成，旨在系统化解决技术矛盾并实现创新突破。</p>
+                </div>
+                <div class="highlight-box">
+                    <h3>核心理念与优势</h3>
+                    <ul>
+                        <li><strong>突破思维惯性：</strong>摆脱定式，寻找非传统方案</li>
+                        <li><strong>效率提升：</strong>工具与流程系统化，提高解决效率</li>
+                        <li><strong>预测能力：</strong>基于模式识别，指导未来技术趋势</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 3. 40项发明原则总览 -->
+            <div class="slide">
+                <h1>TRIZ的40项发明原则</h1>
+                <div class="content-box">
+                    <h2>表4-6 发明原则速览</h2>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>1-10</th>
+                                <th>11-20</th>
+                                <th>21-30</th>
+                                <th>31-40</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>1 分割</td><td>11 预先应急措施</td><td>21 紧急行动</td><td>31 多孔材料</td></tr>
+                            <tr><td>2 抽取</td><td>12 等势性</td><td>22 变害为利</td><td>32 改变颜色</td></tr>
+                            <tr><td>3 局部质量</td><td>13 逆向思维</td><td>23 反馈</td><td>33 同质性</td></tr>
+                            <tr><td>4 非对称</td><td>14 曲面化</td><td>24 中介物</td><td>34 抛弃与修复</td></tr>
+                            <tr><td>5 合并</td><td>15 动态化</td><td>25 自服务</td><td>35 参数变化</td></tr>
+                            <tr><td>6 多用性</td><td>16 不足或超额行动</td><td>26 复制</td><td>36 相变</td></tr>
+                            <tr><td>7 套装</td><td>17 维数变化</td><td>27 廉价替代品</td><td>37 热膨胀</td></tr>
+                            <tr><td>8 重量补偿</td><td>18 振动</td><td>28 机械系统的替代</td><td>38 加速强氧化</td></tr>
+                            <tr><td>9 增加反作用</td><td>19 周期性动作</td><td>29 气动与液压结构</td><td>39 惰性环境</td></tr>
+                            <tr><td>10 预操作</td><td>20 有效运动的连续性</td><td>30 柔性壳体或薄膜</td><td>40 复合材料</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="practice-box">
+                    <h3>使用策略</h3>
+                    <p>根据技术矛盾映射原则，优先检索相关发明原则并进行类比迁移。</p>
+                </div>
+            </div>
+
+            <!-- 4. TRIZ应用流程 -->
+            <div class="slide">
+                <h1>TRIZ应用流程</h1>
+                <div class="content-box">
+                    <h2>四步法</h2>
+                    <ol>
+                        <li><strong>定义具体问题：</strong>厘清背景、局限与目标</li>
+                        <li><strong>抽象为通用TRIZ问题：</strong>识别深层结构的相似性</li>
+                        <li><strong>检索通用解决方案：</strong>矛盾矩阵与发明原则</li>
+                        <li><strong>回到具体情境：</strong>定制化落地与细化</li>
+                    </ol>
+                </div>
+                <div class="example-box">
+                    <h3>提示</h3>
+                    <p>复杂问题可引入ARIZ算法；非技术领域可遍历原则以获得启发。</p>
+                </div>
+            </div>
+
+            <!-- 5. ARIZ与服务设计应用 -->
+            <div class="slide">
+                <h1>ARIZ与服务设计应用</h1>
+                <div class="content-box">
+                    <h2>ARIZ（发明问题解决算法）</h2>
+                    <p>用于复杂问题的系统推演与分解，辅助定位关键矛盾与资源。</p>
+                </div>
+                <div class="practice-box">
+                    <h3>服务/设计情境</h3>
+                    <ul>
+                        <li>遍历发明原则，进行跨域类比</li>
+                        <li>以矛盾为核心的结构化创意生成</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 6. 使用流程示意 -->
+            <div class="slide">
+                <h1>TRIZ理论使用流程示意</h1>
+                <div class="content-box">
+                    <h2>流程图</h2>
+                    <img src="图片库/图4-7 TRIZ理论使用流程.png" alt="TRIZ理论使用流程" style="width:100%; max-width:960px;" />
+                </div>
+            </div>
+
+            <!-- 7. 案例总述：担架车设计 -->
+            <div class="slide">
+                <h1>案例总述：融合TRIZ与FBS的担架车创新</h1>
+                <div class="content-box">
+                    <h2>研究目标</h2>
+                    <p>设计可在狭窄路段替代救护车实施救援的新型担架车，兼顾便携性与承载/稳定能力。</p>
+                </div>
+                <div class="highlight-box">
+                    <h3>方法框架</h3>
+                    <ul>
+                        <li>FBS模型：功能-行为-结构的需求映射</li>
+                        <li>TRIZ：矛盾识别与原则迁移</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 8. FBS：用户需求挖掘 -->
+            <div class="slide">
+                <h1>FBS：用户需求挖掘</h1>
+                <div class="content-box">
+                    <h2>需求与构念</h2>
+                    <ul>
+                        <li>医护人员：快速转移、操作便捷</li>
+                        <li>伤者：舒适性与安全性</li>
+                    </ul>
+                </div>
+                <div class="practice-box">
+                    <h3>从功能到结构</h3>
+                    <ul>
+                        <li>折叠/展开机制设计</li>
+                        <li>轮系与转向稳定优化</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 9. 行为与结构推导 -->
+            <div class="slide">
+                <h1>行为与结构推导</h1>
+                <div class="content-box">
+                    <h2>设计要点</h2>
+                    <ul>
+                        <li>快速部署与标准化操作流程</li>
+                        <li>结构强度与重量的平衡</li>
+                        <li>模块化与可扩展携行能力</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 10. 矛盾冲突分析 -->
+            <div class="slide">
+                <h1>矛盾冲突分析（TRIZ）</h1>
+                <div class="content-box">
+                    <h2>典型矛盾</h2>
+                    <ul>
+                        <li>便携性 vs 承载能力</li>
+                        <li>轻量化 vs 稳定性</li>
+                    </ul>
+                </div>
+                <div class="example-box">
+                    <h3>矛盾矩阵启示</h3>
+                    <ul>
+                        <li>分割、动态化、参数变化等原则</li>
+                        <li>引入中介物与反馈以提高系统理想度</li>
+                    </ul>
+                </div>
+                <div class="content-box">
+                    <img src="图片库/图4-8 担架车物理矛盾图示.png" alt="担架车物理矛盾图示" style="width:100%; max-width:960px;" />
+                </div>
+            </div>
+
+            <!-- 11. 物-场分析与替代 -->
+            <div class="slide">
+                <h1>物-场分析与替代</h1>
+                <div class="content-box">
+                    <h2>解决方案形成</h2>
+                    <p>通过物-场分析识别驱动与传递环节，探索将机械场替代为电场等方案以优化性能与可靠性。</p>
+                </div>
+                <div class="img-row">
+                    <img src="图片库/图4-9 物-场分析及解决方案.png" alt="物-场分析及解决方案" style="flex:1; min-width:280px; max-width:48%;" />
+                    <img src="图片库/图4-10 电场替换机械场示意图.png" alt="电场替换机械场示意图" style="flex:1; min-width:280px; max-width:48%;" />
+                </div>
+            </div>
+
+            <!-- 12. 设计成果展示 -->
+            <div class="slide">
+                <h1>设计成果展示</h1>
+                <div class="content-box">
+                    <h2>场景与效果</h2>
+                    <p>新型担架车配备动力系统，可快速转移伤员，携带适量救援物资，并能穿越狭窄空间，支持多人承载。</p>
+                </div>
+                <div class="content-box">
+                    <img src="图片库/图4-11 设计效果图与场景展示.png" alt="设计效果图与场景展示" style="width:100%; max-width:960px;" />
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">← 上一页</button>
+            <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">下一页 →</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        const progressFill = document.querySelector('.progress-fill');
+        const slideMenu = document.getElementById('slideMenu');
+        const menuItems = slideMenu.querySelectorAll('li');
+        const slideCounter = document.getElementById('slideCounter');
+
+        function updateSlide() {
+            slides.forEach((slide, index) => {
+                slide.classList.remove('active');
+                if (index === currentSlide) {
+                    slide.classList.add('active');
+                    slide.style.animation = 'slideInActive 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                }
+            });
+            const progress = ((currentSlide + 1) / totalSlides) * 100;
+            progressFill.style.width = progress + '%';
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+            menuItems.forEach((item, index) => {
+                item.classList.remove('current');
+                if (index === currentSlide) item.classList.add('current');
+            });
+            if (slideCounter) slideCounter.textContent = `${currentSlide + 1} / ${totalSlides}`;
+        }
+        function changeSlide(direction) {
+            const newSlide = currentSlide + direction;
+            if (newSlide >= 0 && newSlide < totalSlides) {
+                slides[currentSlide].style.animation = 'slideTransition 0.4s ease-in-out';
+                setTimeout(() => { currentSlide = newSlide; updateSlide(); }, 200);
+            }
+        }
+        function goToSlide(slideIndex) {
+            if (slideIndex >= 0 && slideIndex < totalSlides) {
+                currentSlide = slideIndex; updateSlide(); toggleMenu();
+            }
+        }
+        function toggleMenu() { slideMenu.classList.toggle('active'); }
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            else if (e.key === 'ArrowRight') changeSlide(1);
+            else if (e.key === 'Escape') slideMenu.classList.remove('active');
+        });
+        let startX = 0, endX = 0;
+        document.addEventListener('touchstart', function(e) { startX = e.touches[0].clientX; });
+        document.addEventListener('touchend', function(e) { endX = e.changedTouches[0].clientX; handleSwipe(); });
+        function handleSwipe() {
+            const swipeThreshold = 50; const diff = startX - endX;
+            if (Math.abs(diff) > swipeThreshold) { if (diff > 0) changeSlide(1); else changeSlide(-1); }
+        }
+        document.addEventListener('click', function(e) {
+            if (!slideMenu.contains(e.target) && !e.target.classList.contains('menu-toggle')) {
+                slideMenu.classList.remove('active');
+            }
+        });
+        updateSlide();
+        window.addEventListener('load', function() {
+            setTimeout(() => { document.getElementById('pageLoader').style.display = 'none'; document.body.classList.add('fade-in'); }, 2000);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第4-8讲：包容性设计 - 设计研究与创新方法</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        .presentation-container {
+            width: 100%;
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .course-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .course-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #2c3e50;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .instructor-info {
+            font-size: 1rem;
+            color: #7f8c8d;
+            margin-top: 0.3rem;
+        }
+
+        .progress-container {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .slide-counter {
+            font-size: 1rem;
+            color: #2c3e50;
+            font-weight: 600;
+            min-width: 70px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            text-align: center;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+            animation: backgroundFloat 20s ease-in-out infinite;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        @keyframes backgroundFloat {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+                opacity: 1;
+            }
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+                opacity: 0.8;
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 20px 120px 20px;
+            min-height: calc(100vh - 120px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 20px 0;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: none;
+            animation: slideIn 0.6s ease-out;
+            transform: translateY(0);
+            transition: all 0.3s ease;
+        }
+
+        .slide.active {
+            display: block;
+            animation: slideInActive 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .slide:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInActive {
+            0% {
+                opacity: 0;
+                transform: translateY(50px) scale(0.95);
+            }
+            60% {
+                opacity: 0.8;
+                transform: translateY(-10px) scale(1.02);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .slide h1 {
+            color: #4a5568;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-align: center;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: titleGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            from {
+                filter: drop-shadow(0 0 5px rgba(102, 126, 234, 0.3));
+            }
+            to {
+                filter: drop-shadow(0 0 15px rgba(118, 75, 162, 0.5));
+            }
+        }
+
+        .slide h2 {
+            color: #2d3748;
+            font-size: 1.8em;
+            margin-bottom: 25px;
+            border-left: 4px solid #667eea;
+            padding-left: 20px;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide h2::before {
+            content: '';
+            position: absolute;
+            left: -4px;
+            top: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            animation: borderSlide 2s ease-in-out infinite;
+        }
+
+        @keyframes borderSlide {
+            0%, 100% {
+                transform: scaleY(1);
+            }
+            50% {
+                transform: scaleY(1.2);
+            }
+        }
+
+        .slide h3 {
+            color: #4a5568;
+            font-size: 1.4em;
+            margin: 20px 0 15px 0;
+            font-weight: 600;
+        }
+
+        .slide p, .slide li {
+            line-height: 1.8;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            color: #2d3748;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide ul, .slide ol {
+            margin-left: 30px;
+            margin-bottom: 20px;
+        }
+
+        .slide li {
+            margin-bottom: 10px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .slide li:hover {
+            transform: translateX(5px);
+            color: #667eea;
+        }
+
+        .content-box {
+            background: linear-gradient(135deg, #f7fafc, #edf2f7);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .content-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(102, 126, 234, 0.05), transparent);
+            transform: rotate(45deg);
+            transition: all 0.6s ease;
+            opacity: 0;
+        }
+
+        .content-box:hover::before {
+            animation: shimmer 1.5s ease-in-out;
+        }
+
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%) translateY(-100%) rotate(45deg);
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(100%) translateY(100%) rotate(45deg);
+                opacity: 0;
+            }
+        }
+
+        .content-box:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #fed7d7, #feb2b2);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #e53e3e;
+            box-shadow: 0 5px 15px rgba(229, 62, 62, 0.1);
+            transition: all 0.3s ease;
+            animation: pulseGlow 4s ease-in-out infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% {
+                box-shadow: 0 5px 15px rgba(229, 62, 62, 0.1);
+            }
+            50% {
+                box-shadow: 0 8px 25px rgba(229, 62, 62, 0.2);
+            }
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #c6f6d5, #9ae6b4);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #38a169;
+            box-shadow: 0 5px 15px rgba(56, 161, 105, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .practice-box {
+            background: linear-gradient(135deg, #bee3f8, #90cdf4);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #3182ce;
+            box-shadow: 0 5px 15px rgba(49, 130, 206, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #fef5e7, #fed7aa);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #dd6b20;
+            box-shadow: 0 5px 15px rgba(221, 107, 32, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            animation: tableSlideIn 0.8s ease-out;
+        }
+
+        @keyframes tableSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .comparison-table th {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            position: relative;
+        }
+
+        .comparison-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: #f7fafc;
+        }
+
+        .comparison-table tr:hover {
+            background: rgba(102, 126, 234, 0.05);
+            transform: scale(1.01);
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.95), rgba(118, 75, 162, 0.95));
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            z-index: 1000;
+            box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50px;
+            padding: 15px 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            color: #4a5568;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .nav-btn:hover::before {
+            left: 100%;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 1);
+            color: #667eea;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .nav-btn:active {
+            transform: translateY(-1px) scale(1.02);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .nav-btn:disabled:hover {
+            background: rgba(255, 255, 255, 0.9);
+            color: #4a5568;
+            transform: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            z-index: 1001;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s ease;
+            width: 0%;
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 20px;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6));
+            animation: progressShine 2s ease-in-out infinite;
+        }
+
+        @keyframes progressShine {
+            0%, 100% {
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+        .slide-menu {
+            position: fixed;
+            top: 140px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+            animation: menuSlideIn 0.3s ease-out;
+        }
+
+        @keyframes menuSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+        }
+
+        .slide-menu.active {
+            display: block;
+        }
+
+        .slide-menu h3 {
+            margin-bottom: 15px;
+            color: #4a5568;
+            font-size: 1.2em;
+        }
+
+        .slide-menu ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .slide-menu li {
+            margin-bottom: 8px;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+            position: relative;
+        }
+
+        .slide-menu li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 0;
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 8px;
+            transition: width 0.3s ease;
+            z-index: -1;
+        }
+
+        .slide-menu li:hover::before {
+            width: 100%;
+        }
+
+        .slide-menu li:hover {
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .slide-menu li.current {
+            background: rgba(102, 126, 234, 0.2);
+            font-weight: 600;
+        }
+
+        .menu-toggle {
+            position: fixed;
+            top: 140px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            font-size: 20px;
+            color: #4a5568;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+
+        .menu-toggle:hover {
+            background: rgba(102, 126, 234, 0.9);
+            color: white;
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .course-title {
+                font-size: 1.1rem;
+            }
+
+            .container {
+                padding: 10px 10px 100px 10px;
+            }
+
+            .slide {
+                padding: 20px;
+                margin: 10px 0;
+            }
+
+            .slide h1 {
+                font-size: 2em;
+            }
+
+            .slide h2 {
+                font-size: 1.5em;
+            }
+
+            .navigation {
+                padding: 15px;
+                gap: 10px;
+            }
+
+            .nav-btn {
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+
+            .slide-menu {
+                right: 10px;
+                top: 160px;
+                max-width: calc(100vw - 40px);
+            }
+
+            .menu-toggle {
+                right: 10px;
+                top: 160px;
+            }
+        }
+
+        .page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            animation: loaderFadeOut 1s ease-in-out 2s forwards;
+        }
+
+        .loader-content {
+            text-align: center;
+            color: white;
+        }
+
+        .loader-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes loaderFadeOut {
+            to {
+                opacity: 0;
+                visibility: hidden;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #5a6fd8, #6b4190);
+        }
+    </style>
+</head>
+<body>
+    <div class="page-loader" id="pageLoader">
+        <div class="loader-content">
+            <div class="loader-spinner"></div>
+            <h3>加载中...</h3>
+        </div>
+    </div>
+
+    <div class="presentation-container">
+        <header class="header">
+            <div class="course-info">
+                <div class="course-title">设计研究与创新方法 - 第4-8讲</div>
+                <div class="instructor-info">授课教师：唐星-助理教授 | 西南交通大学设计艺术学院 | 主题：包容性设计</div>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="slide-counter" id="slideCounter">1 / 12</div>
+            </div>
+        </header>
+
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
+
+        <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+
+        <div class="slide-menu" id="slideMenu">
+            <h3>课程导航</h3>
+            <ul>
+                <li onclick="goToSlide(0)">1. 课程主题与导览</li>
+                <li onclick="goToSlide(1)">2. 概念与目标用户</li>
+                <li onclick="goToSlide(2)">3. 设计原则</li>
+                <li onclick="goToSlide(3)">4. 设计流程四阶段</li>
+                <li onclick="goToSlide(4)">5. 用户金字塔理论</li>
+                <li onclick="goToSlide(5)">6. 立方金字塔与反设计排斥</li>
+                <li onclick="goToSlide(6)">7. 案例总述：老年人口腔健康</li>
+                <li onclick="goToSlide(7)">8. 需求调研与分析</li>
+                <li onclick="goToSlide(8)">9. 包容性设计策略</li>
+                <li onclick="goToSlide(9)">10. 原型设计与实现</li>
+                <li onclick="goToSlide(10)">11. 测试评估与迭代</li>
+                <li onclick="goToSlide(11)">12. 最终产品效果展示</li>
+            </ul>
+        </div>
+
+        <div class="container">
+            <!-- 1. 课程主题与导览 -->
+            <div class="slide active">
+                <h1>包容性设计</h1>
+                <div class="content-box">
+                    <h2>课程定位</h2>
+                    <p>体现以人民为中心的发展思想，通过消除设计中的障碍和偏见，确保产品能够服务于不同能力、背景和需求的用户群体。</p>
+                </div>
+                <div class="highlight-box">
+                    <h3>学习目标</h3>
+                    <ul>
+                        <li>理解包容性设计的概念与核心原则</li>
+                        <li>掌握包容性设计的流程与相关理论</li>
+                        <li>学会针对特殊群体的设计策略</li>
+                        <li>完成老年人口腔健康产品设计案例分析</li>
+                    </ul>
+                </div>
+                <div class="example-box">
+                    <h3>核心理念</h3>
+                    <p>不仅是技术层面的无障碍实现，更是社会责任和人文关怀在设计实践中的具体体现。</p>
+                </div>
+            </div>
+
+            <!-- 2. 概念与目标用户 -->
+            <div class="slide">
+                <h1>概念与目标用户</h1>
+                <div class="content-box">
+                    <h2>概念</h2>
+                    <p>包容性设计起源于20世纪80年代，由英国学者罗杰·科尔曼首次提出，是"使主流产品和服务尽可能被更多用户使用，而无需调整或特殊设计"的过程与方法。</p>
+                </div>
+                <div class="highlight-box">
+                    <h3>核心特征</h3>
+                    <ul>
+                        <li>强调公众参与和广泛覆盖</li>
+                        <li>注重公平性、多样性和持续优化</li>
+                        <li>消除社会、技术、政治及经济障碍</li>
+                        <li>让每一个人都能平等享受设计带来的益处</li>
+                    </ul>
+                </div>
+                <div class="content-box">
+                    <h2>目标用户</h2>
+                    <img src="图片库/图4-24 包容性设计目标用户.png" alt="包容性设计目标用户" style="width:100%; max-width:960px;" />
+                </div>
+            </div>
+
+            <!-- 3. 设计原则 -->
+            <div class="slide">
+                <h1>设计原则</h1>
+                <div class="content-box">
+                    <h2>英国CABE五项原则</h2>
+                    <ol>
+                        <li><strong>以人为中心：</strong>将用户置于设计流程的核心，逐步拓展适用人群，系统性排除排斥因素</li>
+                        <li><strong>承认多样性与差异：</strong>尊重用户个体差异，将特殊需求视为人类多样性的一部分</li>
+                        <li><strong>提供多种选择：</strong>当无法以单一方案满足所有人时，应提供备选方案或灵活的使用方式</li>
+                        <li><strong>追求使用灵活性：</strong>充分考虑用户生理与行为差异，降低使用门槛</li>
+                        <li><strong>创造愉悦的环境与体验：</strong>通过持续迭代扩展包容范围，使设计尽可能覆盖更多人群</li>
+                    </ol>
+                </div>
+                <div class="practice-box">
+                    <h3>设计理念</h3>
+                    <p>避免极端或割裂的设计，提升操作的简便性与愉悦感，确保设计的包容性和可及性。</p>
+                </div>
+            </div>
+
+            <!-- 4. 设计流程四阶段 -->
+            <div class="slide">
+                <h1>设计流程四阶段</h1>
+                <div class="content-box">
+                    <h2>挪威设计委员会流程</h2>
+                    <p>每个阶段包含两项关键活动，在整个流程中时刻考虑目标用户和多样化的潜在用户，确保包容性的理念贯穿始终。</p>
+                </div>
+                <div class="highlight-box">
+                    <h3>四个阶段</h3>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>阶段</th>
+                                <th>主要活动</th>
+                                <th>核心目标</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>探索阶段</td>
+                                <td>理解情境和设计调研</td>
+                                <td>全面深层次了解问题点，制定项目目标</td>
+                            </tr>
+                            <tr>
+                                <td>聚焦阶段</td>
+                                <td>挖掘需求和映射洞察</td>
+                                <td>获取真实数据，聚焦关键点与机会点</td>
+                            </tr>
+                            <tr>
+                                <td>发展阶段</td>
+                                <td>设计说明和建立情境</td>
+                                <td>转化需求为设计定位，验证功能满足需求</td>
+                            </tr>
+                            <tr>
+                                <td>产出阶段</td>
+                                <td>用户反馈和建立资源</td>
+                                <td>多次用户测试，整理数据为其他项目提供参考</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 5. 用户金字塔理论 -->
+            <div class="slide">
+                <h1>用户金字塔理论</h1>
+                <div class="content-box">
+                    <h2>Marian Benktzon理论</h2>
+                    <p>设计新产品时可以借助用户金字塔理论以发现残障用户所面临的困境。</p>
+                </div>
+                <div class="content-box">
+                    <h2>用户金字塔模型</h2>
+                    <img src="图片库/图4-25 用户金字塔模型.png" alt="用户金字塔模型" style="width:100%; max-width:960px;" />
+                </div>
+                <div class="highlight-box">
+                    <h3>三层结构</h3>
+                    <ul>
+                        <li><strong>底层：</strong>身体能力健全或轻微衰退的人</li>
+                        <li><strong>中层：</strong>身体能力严重衰退的人</li>
+                        <li><strong>顶层：</strong>严重残障和需要照顾的人，如轮椅使用者和盲人</li>
+                    </ul>
+                </div>
+                <div class="practice-box">
+                    <h3>设计启示</h3>
+                    <p>在包容性设计的过程中，需要考虑整个金字塔的人群，以使更多边缘用户受益。</p>
+                </div>
+            </div>
+
+            <!-- 6. 立方金字塔与反设计排斥 -->
+            <div class="slide">
+                <h1>立方金字塔与反设计排斥</h1>
+                <div class="content-box">
+                    <h2>包容性设计立方金字塔理论</h2>
+                    <p>英国工程与物质科研委员会提出的i~design研究项目成果。立方体代表了总的人口，并根据三个能力等级对用户金字塔进行了扩展。</p>
+                </div>
+                <div class="highlight-box">
+                    <h3>设计方法融合</h3>
+                    <ul>
+                        <li>设计师针对3种不同能力等级提出相应的设计方法</li>
+                        <li>将这几种设计方法相融合，最大限度地满足整体人群</li>
+                        <li>强调将用户能力作为设计的重要考虑因素</li>
+                    </ul>
+                </div>
+                <div class="example-box">
+                    <h3>"反设计排斥"理论</h3>
+                    <ul>
+                        <li>旨在解决产品、服务或环境中存在的设计排斥问题</li>
+                        <li>识别并承认设计排除的存在</li>
+                        <li>重新认识社会中多样化的用户群体</li>
+                        <li>构建包容性设计模块方法</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 7. 案例总述：老年人口腔健康 -->
+            <div class="slide">
+                <h1>案例总述：老年人口腔健康问题</h1>
+                <div class="content-box">
+                    <h2>案例背景</h2>
+                    <p>面对中国老龄化趋势，针对老年人口腔健康问题开展包容性设计实践。</p>
+                </div>
+                <div class="highlight-box">
+                    <h3>设计目标</h3>
+                    <ul>
+                        <li>解决老年人口腔护理的特殊需求</li>
+                        <li>考虑老年人的生理和认知特点</li>
+                        <li>提供易用、安全、有效的口腔护理解决方案</li>
+                        <li>体现包容性设计的核心理念</li>
+                    </ul>
+                </div>
+                <div class="example-box">
+                    <h3>研究方法</h3>
+                    <ul>
+                        <li>多方法调研：用户访谈、问卷调查、市场调研</li>
+                        <li>需求层次模型构建</li>
+                        <li>包容性设计策略制定</li>
+                        <li>原型设计与测试评估</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 8. 需求调研与分析 -->
+            <div class="slide">
+                <h1>需求调研与分析</h1>
+                <div class="content-box">
+                    <h2>多方法调研设施</h2>
+                    <ul>
+                        <li><strong>用户访谈：</strong>走访医院、养老机构，与老年人、护工、医生交流，收集口腔护理痛点</li>
+                        <li><strong>问卷调查：</strong>采用Kano模型设计问卷，分析需求属性</li>
+                        <li><strong>市场调研：</strong>分析现有产品不足，确定改良方向</li>
+                    </ul>
+                </div>
+                <div class="content-box">
+                    <h2>口腔护理产品需求</h2>
+                    <img src="图片库/图4-26 口腔护理产品需求.png" alt="口腔护理产品需求" style="width:100%; max-width:960px;" />
+                </div>
+                <div class="content-box">
+                    <h2>需求层次模型</h2>
+                    <img src="图片库/图4-27 口腔护理产品需求层次模型.png" alt="口腔护理产品需求层次模型" style="width:100%; max-width:960px;" />
+                    <p>通过KJ法将需求归纳为清洁、安全、交互等8大类别。</p>
+                </div>
+            </div>
+
+            <!-- 9. 包容性设计策略 -->
+            <div class="slide">
+                <h1>包容性设计策略</h1>
+                <div class="content-box">
+                    <h2>硬件设计策略</h2>
+                    <ul>
+                        <li>电动牙刷采用扁宽手柄+防滑贴面，贴合老年人抓握弧度</li>
+                        <li>采用多功能刷头（牙缝刷、舌苔刷）模块化设计</li>
+                        <li>适配不同口腔问题，减轻手部负担</li>
+                    </ul>
+                </div>
+                <div class="content-box">
+                    <h2>电动牙刷效果图</h2>
+                    <img src="图片库/图4-28 电动牙刷效果图.jpg" alt="电动牙刷效果图" style="width:100%; max-width:960px;" />
+                </div>
+                <div class="highlight-box">
+                    <h3>软件设计策略</h3>
+                    <ul>
+                        <li>主色调采用绿色系+暖色系辅助</li>
+                        <li>文字字号放大至26-60px，提升辨识度</li>
+                        <li>界面首页显示刷牙评分、口腔检测数据</li>
+                        <li>简化信息层级，优化用户体验</li>
+                    </ul>
+                </div>
+                <div class="content-box">
+                    <h2>软件信息架构图</h2>
+                    <img src="图片库/图4-29 软件信息架构图.png" alt="软件信息架构图" style="width:100%; max-width:960px;" />
+                </div>
+            </div>
+
+            <!-- 10. 原型设计与实现 -->
+            <div class="slide">
+                <h1>原型设计与实现</h1>
+                <div class="content-box">
+                    <h2>硬件原型制作</h2>
+                    <ul>
+                        <li>将电动牙刷、义齿清洁器、自动挤牙膏器整合为壁挂式主机</li>
+                        <li>节省空间且便于取用</li>
+                        <li>刷柄采用ABS+PET，刷毛使用软硅胶+BT纤维</li>
+                        <li>兼顾耐用性与舒适度</li>
+                    </ul>
+                </div>
+                <div class="content-box">
+                    <h2>护理仪器整体展示</h2>
+                    <img src="图片库/图4-30 护理仪器整体展示.jpg" alt="护理仪器整体展示" style="width:100%; max-width:960px;" />
+                </div>
+                <div class="example-box">
+                    <h3>软件界面设计</h3>
+                    <p>使用Sketch制作外置界面，包含欢迎页、刷牙界面、口腔档案等模块，支持字体大小、配色自定义。</p>
+                </div>
+                <div class="content-box">
+                    <h2>软件欢迎页与主页</h2>
+                    <img src="图片库/图4-31 软件欢迎页与主页.png" alt="软件欢迎页与主页" style="width:100%; max-width:960px;" />
+                </div>
+            </div>
+
+            <!-- 11. 测试评估与迭代 -->
+            <div class="slide">
+                <h1>测试评估与迭代</h1>
+                <div class="content-box">
+                    <h2>满意度调查</h2>
+                    <p>从外观、交互、功能等14个维度评估产品的用户满意度和可用性。</p>
+                </div>
+                <div class="highlight-box">
+                    <h3>迭代优化</h3>
+                    <ul>
+                        <li>增加语音操作实时反馈界面</li>
+                        <li>解决用户"不知是否录入"的困惑</li>
+                        <li>优化交互流程，提升用户体验</li>
+                        <li>根据测试反馈持续改进产品设计</li>
+                    </ul>
+                </div>
+                <div class="practice-box">
+                    <h3>评估方法</h3>
+                    <ul>
+                        <li>用户测试与观察</li>
+                        <li>满意度问卷调查</li>
+                        <li>专家评估与建议</li>
+                        <li>长期使用效果跟踪</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 12. 最终产品效果展示 -->
+            <div class="slide">
+                <h1>最终产品效果展示</h1>
+                <div class="content-box">
+                    <h2>产品组成</h2>
+                    <p>该研究面向老年人增龄性口腔变化提供针对性的口腔清洗和护理，由电动牙刷、多功能刷头、超声波假牙清洗盒、自动挤牙膏装置、牙线收纳盒、主机、智能硬件和外置屏幕构成。</p>
+                </div>
+                <div class="content-box">
+                    <h2>细节与功能区展示</h2>
+                    <img src="图片库/图4-32 细节与功能区展示.jpg" alt="细节与功能区展示" style="width:100%; max-width:960px;" />
+                </div>
+                <div class="content-box">
+                    <h2>整体效果图展示</h2>
+                    <img src="图片库/图4-33 整体效果图展示.jpg" alt="整体效果图展示" style="width:100%; max-width:960px;" />
+                </div>
+                <div class="example-box">
+                    <h3>设计价值</h3>
+                    <ul>
+                        <li>体现包容性设计的核心理念</li>
+                        <li>解决老年人口腔护理的实际需求</li>
+                        <li>提供系统性的口腔健康解决方案</li>
+                        <li>为特殊群体设计提供参考案例</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">← 上一页</button>
+            <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">下一页 →</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        const progressFill = document.querySelector('.progress-fill');
+        const slideMenu = document.getElementById('slideMenu');
+        const menuItems = slideMenu.querySelectorAll('li');
+        const slideCounter = document.getElementById('slideCounter');
+
+        function updateSlide() {
+            slides.forEach((slide, index) => {
+                slide.classList.remove('active');
+                if (index === currentSlide) {
+                    slide.classList.add('active');
+                    slide.style.animation = 'slideInActive 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                }
+            });
+
+            const progress = ((currentSlide + 1) / totalSlides) * 100;
+            progressFill.style.width = progress + '%';
+
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+
+            menuItems.forEach((item, index) => {
+                item.classList.remove('current');
+                if (index === currentSlide) {
+                    item.classList.add('current');
+                }
+            });
+
+            if (slideCounter) {
+                slideCounter.textContent = `${currentSlide + 1} / ${totalSlides}`;
+            }
+        }
+
+        function changeSlide(direction) {
+            const newSlide = currentSlide + direction;
+            if (newSlide >= 0 && newSlide < totalSlides) {
+                slides[currentSlide].style.animation = 'slideTransition 0.4s ease-in-out';
+                
+                setTimeout(() => {
+                    currentSlide = newSlide;
+                    updateSlide();
+                }, 200);
+            }
+        }
+
+        function goToSlide(slideIndex) {
+            if (slideIndex >= 0 && slideIndex < totalSlides) {
+                currentSlide = slideIndex;
+                updateSlide();
+                toggleMenu();
+            }
+        }
+
+        function toggleMenu() {
+            slideMenu.classList.toggle('active');
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') {
+                changeSlide(-1);
+            } else if (e.key === 'ArrowRight') {
+                changeSlide(1);
+            } else if (e.key === 'Escape') {
+                slideMenu.classList.remove('active');
+            }
+        });
+
+        let startX = 0;
+        let endX = 0;
+
+        document.addEventListener('touchstart', function(e) {
+            startX = e.touches[0].clientX;
+        });
+
+        document.addEventListener('touchend', function(e) {
+            endX = e.changedTouches[0].clientX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = startX - endX;
+
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    changeSlide(1);
+                } else {
+                    changeSlide(-1);
+                }
+            }
+        }
+
+        document.addEventListener('click', function(e) {
+            if (!slideMenu.contains(e.target) && !e.target.classList.contains('menu-toggle')) {
+                slideMenu.classList.remove('active');
+            }
+        });
+
+        updateSlide();
+
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                document.getElementById('pageLoader').style.display = 'none';
+                document.body.classList.add('fade-in');
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
