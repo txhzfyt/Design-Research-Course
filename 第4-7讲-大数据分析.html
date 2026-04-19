@@ -1,10 +1,11 @@
 <!DOCTYPE html>
+
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>第4-7讲：大数据分析与应用 - 设计研究与创新方法</title>
-    <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>第4-7讲：大数据分析与应用 - 设计研究与创新方法</title>
+<style>
         * {
             margin: 0;
             padding: 0;
@@ -13,7 +14,7 @@
 
         body {
             font-family: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #f0f2f5;
             color: #333;
             overflow-x: hidden;
             position: relative;
@@ -48,11 +49,7 @@
         .course-title {
             font-size: 1.4rem;
             font-weight: 700;
-            color: #2c3e50;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: #1875F0;
         }
 
         .instructor-info {
@@ -85,7 +82,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: 
+            background-image:
                 radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
                 radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
                 radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
@@ -95,10 +92,13 @@
         }
 
         @keyframes backgroundFloat {
-            0%, 100% {
+
+            0%,
+            100% {
                 transform: translateY(0px) rotate(0deg);
                 opacity: 1;
             }
+
             50% {
                 transform: translateY(-20px) rotate(180deg);
                 opacity: 0.8;
@@ -115,17 +115,34 @@
         }
 
         .slide {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            padding: 40px;
+            background: rgba(255, 255, 255, 1);
+            border-radius: 8px;
+            padding: 60px 40px 40px 40px;
             margin: 20px 0;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
             display: none;
             animation: slideIn 0.6s ease-out;
             transform: translateY(0);
             transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .header-logo {
+            height: 40px;
+            margin-right: 20px;
+            object-fit: contain;
+        }
+
+        .slide-title-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .slide-title-icon {
+            height: 32px;
+            margin-right: 15px;
         }
 
         .slide.active {
@@ -143,6 +160,7 @@
                 opacity: 0;
                 transform: translateY(30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -154,10 +172,12 @@
                 opacity: 0;
                 transform: translateY(50px) scale(0.95);
             }
+
             60% {
                 opacity: 0.8;
                 transform: translateY(-10px) scale(1.02);
             }
+
             100% {
                 opacity: 1;
                 transform: translateY(0) scale(1);
@@ -165,53 +185,42 @@
         }
 
         .slide h1 {
-            color: #4a5568;
-            font-size: 2.5em;
-            margin-bottom: 30px;
-            text-align: center;
+            color: #1875F0;
+            font-size: 2.2em;
+            text-align: left;
             font-weight: 700;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: titleGlow 3s ease-in-out infinite alternate;
+            margin-bottom: 0;
+            border-bottom: 2px solid #1875F0;
+            padding-bottom: 10px;
+            width: 100%;
         }
 
         @keyframes titleGlow {
             from {
                 filter: drop-shadow(0 0 5px rgba(102, 126, 234, 0.3));
             }
+
             to {
                 filter: drop-shadow(0 0 15px rgba(118, 75, 162, 0.5));
             }
         }
 
         .slide h2 {
-            color: #2d3748;
-            font-size: 1.8em;
-            margin-bottom: 25px;
-            border-left: 4px solid #667eea;
-            padding-left: 20px;
+            color: #1875F0;
+            font-size: 1.6em;
+            margin-bottom: 20px;
+            border-left: 4px solid #F59A23;
+            padding-left: 15px;
             font-weight: 600;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .slide h2::before {
-            content: '';
-            position: absolute;
-            left: -4px;
-            top: 0;
-            width: 4px;
-            height: 100%;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            animation: borderSlide 2s ease-in-out infinite;
         }
 
         @keyframes borderSlide {
-            0%, 100% {
+
+            0%,
+            100% {
                 transform: scaleY(1);
             }
+
             50% {
                 transform: scaleY(1.2);
             }
@@ -220,11 +229,12 @@
         .slide h3 {
             color: #4a5568;
             font-size: 1.4em;
-            margin: 20px 0 15px 0;
+            margin: 20px 0 15px;
             font-weight: 600;
         }
 
-        .slide p, .slide li {
+        .slide p,
+        .slide li {
             line-height: 1.8;
             margin-bottom: 15px;
             font-size: 1.1em;
@@ -237,13 +247,15 @@
                 opacity: 0;
                 transform: translateY(20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
 
-        .slide ul, .slide ol {
+        .slide ul,
+        .slide ol {
             margin-left: 30px;
             margin-bottom: 20px;
         }
@@ -260,100 +272,52 @@
         }
 
         .content-box {
-            background: linear-gradient(135deg, #f7fafc, #edf2f7);
-            border-radius: 15px;
+            background: #F2F7FD;
+            border-radius: 8px;
             padding: 25px;
             margin: 20px 0;
-            border-left: 5px solid #667eea;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border-left: 5px solid #1875F0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
             transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .content-box::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(102, 126, 234, 0.05), transparent);
-            transform: rotate(45deg);
-            transition: all 0.6s ease;
-            opacity: 0;
-        }
-
-        .content-box:hover::before {
-            animation: shimmer 1.5s ease-in-out;
-        }
-
-        @keyframes shimmer {
-            0% {
-                transform: translateX(-100%) translateY(-100%) rotate(45deg);
-                opacity: 0;
-            }
-            50% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateX(100%) translateY(100%) rotate(45deg);
-                opacity: 0;
-            }
-        }
-
-        .content-box:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         }
 
         .highlight-box {
-            background: linear-gradient(135deg, #fed7d7, #feb2b2);
-            border-radius: 15px;
+            background: #FFF3E8;
+            border-radius: 8px;
             padding: 20px;
             margin: 20px 0;
-            border-left: 5px solid #e53e3e;
-            box-shadow: 0 5px 15px rgba(229, 62, 62, 0.1);
+            border-left: 5px solid #F59A23;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
             transition: all 0.3s ease;
-            animation: pulseGlow 4s ease-in-out infinite;
-        }
-
-        @keyframes pulseGlow {
-            0%, 100% {
-                box-shadow: 0 5px 15px rgba(229, 62, 62, 0.1);
-            }
-            50% {
-                box-shadow: 0 8px 25px rgba(229, 62, 62, 0.2);
-            }
         }
 
         .example-box {
-            background: linear-gradient(135deg, #c6f6d5, #9ae6b4);
-            border-radius: 15px;
+            background: #E8F4EC;
+            border-radius: 8px;
             padding: 20px;
             margin: 20px 0;
-            border-left: 5px solid #38a169;
-            box-shadow: 0 5px 15px rgba(56, 161, 105, 0.1);
+            border-left: 5px solid #28A745;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
             transition: all 0.3s ease;
         }
 
         .practice-box {
-            background: linear-gradient(135deg, #bee3f8, #90cdf4);
-            border-radius: 15px;
+            background: #EBF4FC;
+            border-radius: 8px;
             padding: 20px;
             margin: 20px 0;
-            border-left: 5px solid #3182ce;
-            box-shadow: 0 5px 15px rgba(49, 130, 206, 0.1);
+            border-left: 5px solid #1875F0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
             transition: all 0.3s ease;
         }
 
         .warning-box {
-            background: linear-gradient(135deg, #fef5e7, #fed7aa);
-            border-radius: 15px;
+            background: #FFF3E8;
+            border-radius: 8px;
             padding: 20px;
             margin: 20px 0;
-            border-left: 5px solid #dd6b20;
-            box-shadow: 0 5px 15px rgba(221, 107, 32, 0.1);
+            border-left: 5px solid #F59A23;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
             transition: all 0.3s ease;
         }
 
@@ -373,6 +337,7 @@
                 opacity: 0;
                 transform: translateY(30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -380,7 +345,7 @@
         }
 
         .comparison-table th {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: #1875F0;
             color: white;
             padding: 15px;
             text-align: left;
@@ -389,7 +354,7 @@
         }
 
         .comparison-table td {
-            padding: 15px;
+            padding: 12px 15px;
             border-bottom: 1px solid #e2e8f0;
             transition: all 0.3s ease;
         }
@@ -408,54 +373,37 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.95), rgba(118, 75, 162, 0.95));
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
             padding: 20px;
             display: flex;
             justify-content: center;
             gap: 15px;
             z-index: 1000;
-            box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05);
         }
 
         .nav-btn {
-            background: rgba(255, 255, 255, 0.9);
-            border: none;
+            background: #f0f2f5;
+            border: 1px solid #e2e8f0;
             border-radius: 50px;
             padding: 15px 25px;
             cursor: pointer;
             font-size: 16px;
             font-weight: 600;
             color: #4a5568;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             position: relative;
             overflow: hidden;
         }
 
-        .nav-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            transition: left 0.6s ease;
-        }
-
-        .nav-btn:hover::before {
-            left: 100%;
-        }
-
         .nav-btn:hover {
-            background: rgba(255, 255, 255, 1);
-            color: #667eea;
+            background: #1875F0;
+            color: white;
             transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 8px 20px rgba(24, 117, 240, 0.3);
         }
 
         .nav-btn:active {
@@ -469,10 +417,10 @@
         }
 
         .nav-btn:disabled:hover {
-            background: rgba(255, 255, 255, 0.9);
+            background: #f0f2f5;
             color: #4a5568;
             transform: none;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         }
 
         .progress-bar {
@@ -487,7 +435,7 @@
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #667eea, #764ba2);
+            background: #1875F0;
             transition: width 0.3s ease;
             width: 0%;
             position: relative;
@@ -505,9 +453,12 @@
         }
 
         @keyframes progressShine {
-            0%, 100% {
+
+            0%,
+            100% {
                 opacity: 0;
             }
+
             50% {
                 opacity: 1;
             }
@@ -535,6 +486,7 @@
                 opacity: 0;
                 transform: translateX(20px) scale(0.95);
             }
+
             to {
                 opacity: 1;
                 transform: translateX(0) scale(1);
@@ -574,7 +526,7 @@
             top: 0;
             width: 0;
             height: 100%;
-            background: linear-gradient(90deg, #667eea, #764ba2);
+            background: #1875F0;
             border-radius: 8px;
             transition: width 0.3s ease;
             z-index: -1;
@@ -668,6 +620,10 @@
                 right: 10px;
                 top: 160px;
             }
+
+            .comparison-table td {
+                padding: 10px;
+            }
         }
 
         .page-loader {
@@ -676,7 +632,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #ffffff;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -686,22 +642,27 @@
 
         .loader-content {
             text-align: center;
-            color: white;
+            color: #1875F0;
         }
 
         .loader-spinner {
             width: 50px;
             height: 50px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-top: 3px solid white;
+            border: 3px solid rgba(24, 117, 240, 0.2);
+            border-top: 3px solid #1875F0;
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin: 0 auto 20px;
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         @keyframes loaderFadeOut {
@@ -716,334 +677,332 @@
         }
 
         ::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.1);
+            background: #f0f2f5;
             border-radius: 4px;
         }
 
         ::-webkit-scrollbar-thumb {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: #1875F0;
             border-radius: 4px;
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(135deg, #5a6fd8, #6b4190);
+            background: #105bbf;
+        }
+
+        .img-row {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            align-items: flex-start;
+        }
+
+        .img-row img {
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            max-width: 100%;
+            height: auto;
         }
     </style>
 </head>
 <body>
-    <div class="page-loader" id="pageLoader">
-        <div class="loader-content">
-            <div class="loader-spinner"></div>
-            <h3>加载中...</h3>
-        </div>
-    </div>
-
-    <div class="presentation-container">
-        <header class="header">
-            <div class="course-info">
-                <div class="course-title">设计研究与创新方法 - 第4-7讲</div>
-                <div class="instructor-info">授课教师：唐星-助理教授 | 西南交通大学设计艺术学院 | 主题：大数据分析与应用</div>
-            </div>
-            <div class="progress-container">
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill"></div>
-                </div>
-                <div class="slide-counter" id="slideCounter">1 / 10</div>
-            </div>
-        </header>
-
-        <div class="progress-bar">
-            <div class="progress-fill"></div>
-        </div>
-
-        <button class="menu-toggle" onclick="toggleMenu()">☰</button>
-
-        <div class="slide-menu" id="slideMenu">
-            <h3>课程导航</h3>
-            <ul>
-                <li onclick="goToSlide(0)">1. 课程主题与导览</li>
-                <li onclick="goToSlide(1)">2. 概念与核心价值</li>
-                <li onclick="goToSlide(2)">3. 数据驱动设计理念</li>
-                <li onclick="goToSlide(3)">4. 一般流程概述</li>
-                <li onclick="goToSlide(4)">5. 数据收集与清洗</li>
-                <li onclick="goToSlide(5)">6. 模式识别与预测</li>
-                <li onclick="goToSlide(6)">7. 案例总述：重庆轨道车辆</li>
-                <li onclick="goToSlide(7)">8. 特征词汇提取</li>
-                <li onclick="goToSlide(8)">9. 地域特征基元选取</li>
-                <li onclick="goToSlide(9)">10. 设计转换与效果</li>
-            </ul>
-        </div>
-
-        <div class="container">
-            <!-- 1. 课程主题与导览 -->
-            <div class="slide active">
-                <h1>大数据分析与应用</h1>
-                <div class="content-box">
-                    <h2>课程定位</h2>
-                    <p>体现新时代数字化转型的战略要求，通过海量数据的深度挖掘和智能分析，为设计决策提供科学依据和精准洞察。</p>
-                </div>
-                <div class="highlight-box">
-                    <h3>学习目标</h3>
-                    <ul>
-                        <li>理解大数据分析在设计中的核心价值</li>
-                        <li>掌握数据驱动设计的基本流程</li>
-                        <li>学会用户画像创建与行为模式识别</li>
-                        <li>完成重庆轨道车辆设计案例分析</li>
-                    </ul>
-                </div>
-                <div class="example-box">
-                    <h3>核心转变</h3>
-                    <p>从传统的经验驱动设计转向数据驱动设计，实现设计过程的科学化、精准化和个性化。</p>
-                </div>
-            </div>
-
-            <!-- 2. 概念与核心价值 -->
-            <div class="slide">
-                <h1>概念与核心价值</h1>
-                <div class="content-box">
-                    <h2>概念</h2>
-                    <p>使用数据分析工具来分析人们在线上和线下的行为模式和生活方式，通过分析结果创建用户画像，用来设计个性化和定制化的产品用户体验。</p>
-                </div>
-                <div class="highlight-box">
-                    <h3>数据来源</h3>
-                    <ul>
-                        <li>购物习惯与搜索行为</li>
-                        <li>社交媒体互动数据</li>
-                        <li>移动设备使用记录</li>
-                        <li>网络评论与反馈</li>
-                    </ul>
-                </div>
-                <div class="practice-box">
-                    <h3>核心价值</h3>
-                    <ul>
-                        <li>揭示用户日常行为模式</li>
-                        <li>提供全面客观的用户反馈</li>
-                        <li>确保以用户为中心的设计</li>
-                        <li>支持个性化产品开发</li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- 3. 数据驱动设计理念 -->
-            <div class="slide">
-                <h1>数据驱动设计理念</h1>
-                <div class="content-box">
-                    <h2>理念转变</h2>
-                    <p>大数据分析帮助产品设计者深入理解用户行为，数据以用户为中心，确保设计出更符合用户需求的产品。</p>
-                </div>
-                <div class="example-box">
-                    <h3>应用优势</h3>
-                    <ul>
-                        <li><strong>精准洞察：</strong>基于真实数据而非主观假设</li>
-                        <li><strong>个性化：</strong>针对不同用户群体定制化设计</li>
-                        <li><strong>预测性：</strong>预测用户未来行为趋势</li>
-                        <li><strong>迭代优化：</strong>持续数据反馈指导设计改进</li>
-                    </ul>
-                </div>
-                <div class="practice-box">
-                    <h3>设计决策支持</h3>
-                    <p>网络评论提供更为全面客观的用户反馈意见，为产品设计提供科学依据和精准洞察。</p>
-                </div>
-            </div>
-
-            <!-- 4. 一般流程概述 -->
-            <div class="slide">
-                <h1>一般流程概述</h1>
-                <div class="content-box">
-                    <h2>研究流程图</h2>
-                    <img src="图片库/图4-22研究流程图.jpg" alt="大数据分析研究流程图" style="width:100%; max-width:960px;" />
-                </div>
-                <div class="highlight-box">
-                    <h3>七步流程</h3>
-                    <ol>
-                        <li>数据收集：确定数据来源，遵守隐私法规</li>
-                        <li>数据清洗：处理缺失值、异常值和错误数据</li>
-                        <li>数据整合：合并不同来源的数据集</li>
-                        <li>探索性数据分析：初步了解数据分布和趋势</li>
-                        <li>模式识别：识别用户行为模式和细分市场</li>
-                        <li>行为预测：应用机器学习算法预测用户行为</li>
-                        <li>用户画像创建：根据分析结果创建用户画像</li>
-                    </ol>
-                </div>
-            </div>
-
-            <!-- 5. 数据收集与清洗 -->
-            <div class="slide">
-                <h1>数据收集与清洗</h1>
-                <div class="content-box">
-                    <h2>数据收集</h2>
-                    <ul>
-                        <li><strong>社交媒体：</strong>用户互动、评论、分享行为</li>
-                        <li><strong>在线交易：</strong>购买记录、浏览历史</li>
-                        <li><strong>移动设备：</strong>使用时长、应用偏好</li>
-                        <li><strong>网站访问：</strong>页面浏览、停留时间</li>
-                    </ul>
-                </div>
-                <div class="highlight-box">
-                    <h3>数据清洗要点</h3>
-                    <ul>
-                        <li>处理缺失值、异常值和错误数据</li>
-                        <li>标准化数据格式，为分析做准备</li>
-                        <li>确保数据收集遵守隐私法规和伦理标准</li>
-                    </ul>
-                </div>
-                <div class="warning-box">
-                    <h3>伦理考虑</h3>
-                    <p>数据收集必须遵守隐私保护法规，确保用户知情同意，保护个人隐私信息。</p>
-                </div>
-            </div>
-
-            <!-- 6. 模式识别与预测 -->
-            <div class="slide">
-                <h1>模式识别与预测</h1>
-                <div class="content-box">
-                    <h2>模式识别</h2>
-                    <ul>
-                        <li><strong>聚类分析：</strong>识别相似用户群体</li>
-                        <li><strong>关联规则挖掘：</strong>发现行为关联性</li>
-                        <li><strong>时序分析：</strong>识别行为时间模式</li>
-                        <li><strong>异常检测：</strong>发现特殊行为模式</li>
-                    </ul>
-                </div>
-                <div class="example-box">
-                    <h3>行为预测</h3>
-                    <ul>
-                        <li>应用机器学习算法预测用户行为</li>
-                        <li>根据历史行为预测未来行为趋势</li>
-                        <li>识别用户群体和细分市场特征</li>
-                    </ul>
-                </div>
-                <div class="practice-box">
-                    <h3>用户画像创建</h3>
-                    <p>根据分析结果创建详细的用户画像，包括行为习惯、偏好和需求特征。</p>
-                </div>
-            </div>
-
-            <!-- 7. 案例总述：重庆轨道车辆 -->
-            <div class="slide">
-                <h1>案例总述：重庆轨道车辆工业设计</h1>
-                <div class="content-box">
-                    <h2>案例背景</h2>
-                    <p>以重庆市轨道车辆工业设计为目标，要求在车辆外观设计中体现所在城市的地域特征。</p>
-                </div>
-                <div class="highlight-box">
-                    <h3>重庆特色</h3>
-                    <ul>
-                        <li>西南地区综合交通枢纽</li>
-                        <li>丰富多彩的地域文化资源</li>
-                        <li>得天独厚的自然地形条件</li>
-                        <li>新一代网红城市，网络数据丰富</li>
-                    </ul>
-                </div>
-                <div class="example-box">
-                    <h3>研究方法</h3>
-                    <p>将与地域特征相关的网络评论作为研究材料，提取重庆地域特征词汇，再与本地特征形象进行映射，提取视觉特征，并应用于车辆外观工业设计中。</p>
-                </div>
-            </div>
-
-            <!-- 8. 特征词汇提取 -->
-            <div class="slide">
-                <h1>特征词汇提取</h1>
-                <div class="content-box">
-                    <h2>数据采集</h2>
-                    <p>选取微博、知乎、蚂蚁窝旅游三个网站作为特征词采集平台，通过遍历"重庆印象"、"重庆旅游"、"重庆是怎样的城市"等相关话题。</p>
-                </div>
-                <div class="example-box">
-                    <h3>文本预处理示例</h3>
-                    <p><strong>原文：</strong>重庆不仅在那些光鲜亮丽的钢筋水泥和璀璨灯火里，还在三峡两岸的崇山峻岭之中。</p>
-                    <p><strong>处理后：</strong>过滤停用词，替换书面词汇为通俗词汇（如"璀璨灯火"→"繁华"）</p>
-                </div>
-                <div class="highlight-box">
-                    <h3>TF-IDF权重排序结果</h3>
-                    <table class="comparison-table">
-                        <thead>
-                            <tr>
-                                <th>特征词汇</th>
-                                <th>权重值</th>
-                                <th>语义类别</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>山城</td>
-                                <td>0.871</td>
-                                <td>地理特征</td>
-                            </tr>
-                            <tr>
-                                <td>多维空间</td>
-                                <td>0.758</td>
-                                <td>空间特征</td>
-                            </tr>
-                            <tr>
-                                <td>魔幻</td>
-                                <td>0.756</td>
-                                <td>文化特征</td>
-                            </tr>
-                            <tr>
-                                <td>麻辣</td>
-                                <td>0.588</td>
-                                <td>饮食特征</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- 9. 地域特征基元选取 -->
-            <div class="slide">
-                <h1>地域特征基元选取</h1>
-                <div class="content-box">
-                    <h2>特征基元分类</h2>
-                    <ul>
-                        <li><strong>基元1：</strong>奇趣水墨山城，风味热辣雾都 (4.085)</li>
-                        <li><strong>基元2：</strong>魔幻赛博朋克，东方奇想世界 (2.155)</li>
-                        <li><strong>基元3：</strong>山中江湖儿女，市井烟火人 (0.888)</li>
-                    </ul>
-                </div>
-                <div class="highlight-box">
-                    <h3>选定基元</h3>
-                    <p>选取"魔幻赛博朋克，东方奇想世界"地域特征基元为设计对象，以"魔幻"、"赛博朋克"、"繁华"、"洪崖洞"、"多维空间"作为最终的地域特征词。</p>
-                </div>
-                <div class="practice-box">
-                    <h3>图解语义提取</h3>
-                    <p>对图解图片分别作关于形态、色彩、图纹等元素的提取，参考高量值图解语义结果用于城轨列车的涂装与造型。</p>
-                </div>
-            </div>
-
-            <!-- 10. 设计转换与效果 -->
-            <div class="slide">
-                <h1>设计转换与效果</h1>
-                <div class="content-box">
-                    <h2>重庆轻轨列车外观设计</h2>
-                    <img src="图片库/图4-23 地域特征转换设计.jpg" alt="重庆轻轨列车地域特征转换设计" style="width:100%; max-width:960px;" />
-                </div>
-                <div class="example-box">
-                    <h3>设计应用</h3>
-                    <ul>
-                        <li>将元素提取结果应用在列车的造型和涂装上</li>
-                        <li>通过反复迭代与评估，形成最终的设计方案</li>
-                        <li>体现重庆"魔幻赛博朋克"的地域特色</li>
-                    </ul>
-                </div>
-                <div class="practice-box">
-                    <h3>设计价值</h3>
-                    <ul>
-                        <li>数据驱动的地域文化表达</li>
-                        <li>用户认知与设计元素的精准匹配</li>
-                        <li>传统设计方法与大数据技术的融合</li>
-                        <li>为城市形象设计提供科学依据</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <div class="navigation">
-            <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">← 上一页</button>
-            <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">下一页 →</button>
-        </div>
-    </div>
-
-    <script>
+<div class="page-loader" id="pageLoader">
+<div class="loader-content">
+<div class="loader-spinner"></div>
+<h3>加载中...</h3>
+</div>
+</div>
+<div class="presentation-container">
+<header class="header">
+<div class="course-info">
+<div class="course-title">设计研究与创新方法 - 第4-7讲</div>
+<div class="instructor-info">授课教师：唐星-助理教授 | 西南交通大学设计艺术学院 | 主题：大数据分析与应用</div>
+</div>
+<div class="progress-container">
+<div class="progress-bar">
+<div class="progress-fill" id="progressFill"></div>
+</div>
+<img alt="School Logo" class="header-logo" src="../Pic/学校-学院logo.png"/><div class="slide-counter" id="slideCounter">1 / 10</div>
+</div>
+</header>
+<div class="progress-bar">
+<div class="progress-fill"></div>
+</div>
+<button class="menu-toggle" onclick="toggleMenu()">☰</button>
+<div class="slide-menu" id="slideMenu">
+<h3>课程导航</h3>
+<ul>
+<li onclick="goToSlide(0)">1. 课程主题与导览</li>
+<li onclick="goToSlide(1)">2. 概念与核心价值</li>
+<li onclick="goToSlide(2)">3. 数据驱动设计理念</li>
+<li onclick="goToSlide(3)">4. 一般流程概述</li>
+<li onclick="goToSlide(4)">5. 数据收集与清洗</li>
+<li onclick="goToSlide(5)">6. 模式识别与预测</li>
+<li onclick="goToSlide(6)">7. 案例总述：重庆轨道车辆</li>
+<li onclick="goToSlide(7)">8. 特征词汇提取</li>
+<li onclick="goToSlide(8)">9. 地域特征基元选取</li>
+<li onclick="goToSlide(9)">10. 设计转换与效果</li>
+</ul>
+</div>
+<div class="container">
+<!-- 1. 课程主题与导览 -->
+<div class="slide active">
+<div class="slide-title-container"><img alt="Arrow" class="slide-title-icon" src="../Pic/左上箭头.png"/><h1>大数据分析与应用</h1></div>
+<div class="content-box">
+<h2>课程定位</h2>
+<p>体现新时代数字化转型的战略要求，通过海量数据的深度挖掘和智能分析，为设计决策提供科学依据和精准洞察。</p>
+</div>
+<div class="highlight-box">
+<h3>学习目标</h3>
+<ul>
+<li>理解大数据分析在设计中的核心价值</li>
+<li>掌握数据驱动设计的基本流程</li>
+<li>学会用户画像创建与行为模式识别</li>
+<li>完成重庆轨道车辆设计案例分析</li>
+</ul>
+</div>
+<div class="example-box">
+<h3>核心转变</h3>
+<p>从传统的经验驱动设计转向数据驱动设计，实现设计过程的科学化、精准化和个性化。</p>
+</div>
+</div>
+<!-- 2. 概念与核心价值 -->
+<div class="slide">
+<div class="slide-title-container"><img alt="Arrow" class="slide-title-icon" src="../Pic/左上箭头.png"/><h1>概念与核心价值</h1></div>
+<div class="content-box">
+<h2>概念</h2>
+<p>使用数据分析工具来分析人们在线上和线下的行为模式和生活方式，通过分析结果创建用户画像，用来设计个性化和定制化的产品用户体验。</p>
+</div>
+<div class="highlight-box">
+<h3>数据来源</h3>
+<ul>
+<li>购物习惯与搜索行为</li>
+<li>社交媒体互动数据</li>
+<li>移动设备使用记录</li>
+<li>网络评论与反馈</li>
+</ul>
+</div>
+<div class="practice-box">
+<h3>核心价值</h3>
+<ul>
+<li>揭示用户日常行为模式</li>
+<li>提供全面客观的用户反馈</li>
+<li>确保以用户为中心的设计</li>
+<li>支持个性化产品开发</li>
+</ul>
+</div>
+</div>
+<!-- 3. 数据驱动设计理念 -->
+<div class="slide">
+<div class="slide-title-container"><img alt="Arrow" class="slide-title-icon" src="../Pic/左上箭头.png"/><h1>数据驱动设计理念</h1></div>
+<div class="content-box">
+<h2>理念转变</h2>
+<p>大数据分析帮助产品设计者深入理解用户行为，数据以用户为中心，确保设计出更符合用户需求的产品。</p>
+</div>
+<div class="example-box">
+<h3>应用优势</h3>
+<ul>
+<li><strong>精准洞察：</strong>基于真实数据而非主观假设</li>
+<li><strong>个性化：</strong>针对不同用户群体定制化设计</li>
+<li><strong>预测性：</strong>预测用户未来行为趋势</li>
+<li><strong>迭代优化：</strong>持续数据反馈指导设计改进</li>
+</ul>
+</div>
+<div class="practice-box">
+<h3>设计决策支持</h3>
+<p>网络评论提供更为全面客观的用户反馈意见，为产品设计提供科学依据和精准洞察。</p>
+</div>
+</div>
+<!-- 4. 一般流程概述 -->
+<div class="slide">
+<div class="slide-title-container"><img alt="Arrow" class="slide-title-icon" src="../Pic/左上箭头.png"/><h1>一般流程概述</h1></div>
+<div class="content-box">
+<h2>研究流程图</h2>
+<img alt="大数据分析研究流程图" src="图片库/图4-22研究流程图.jpg" style="width:100%; max-width:960px;"/>
+</div>
+<div class="highlight-box">
+<h3>七步流程</h3>
+<ol>
+<li>数据收集：确定数据来源，遵守隐私法规</li>
+<li>数据清洗：处理缺失值、异常值和错误数据</li>
+<li>数据整合：合并不同来源的数据集</li>
+<li>探索性数据分析：初步了解数据分布和趋势</li>
+<li>模式识别：识别用户行为模式和细分市场</li>
+<li>行为预测：应用机器学习算法预测用户行为</li>
+<li>用户画像创建：根据分析结果创建用户画像</li>
+</ol>
+</div>
+</div>
+<!-- 5. 数据收集与清洗 -->
+<div class="slide">
+<div class="slide-title-container"><img alt="Arrow" class="slide-title-icon" src="../Pic/左上箭头.png"/><h1>数据收集与清洗</h1></div>
+<div class="content-box">
+<h2>数据收集</h2>
+<ul>
+<li><strong>社交媒体：</strong>用户互动、评论、分享行为</li>
+<li><strong>在线交易：</strong>购买记录、浏览历史</li>
+<li><strong>移动设备：</strong>使用时长、应用偏好</li>
+<li><strong>网站访问：</strong>页面浏览、停留时间</li>
+</ul>
+</div>
+<div class="highlight-box">
+<h3>数据清洗要点</h3>
+<ul>
+<li>处理缺失值、异常值和错误数据</li>
+<li>标准化数据格式，为分析做准备</li>
+<li>确保数据收集遵守隐私法规和伦理标准</li>
+</ul>
+</div>
+<div class="warning-box">
+<h3>伦理考虑</h3>
+<p>数据收集必须遵守隐私保护法规，确保用户知情同意，保护个人隐私信息。</p>
+</div>
+</div>
+<!-- 6. 模式识别与预测 -->
+<div class="slide">
+<div class="slide-title-container"><img alt="Arrow" class="slide-title-icon" src="../Pic/左上箭头.png"/><h1>模式识别与预测</h1></div>
+<div class="content-box">
+<h2>模式识别</h2>
+<ul>
+<li><strong>聚类分析：</strong>识别相似用户群体</li>
+<li><strong>关联规则挖掘：</strong>发现行为关联性</li>
+<li><strong>时序分析：</strong>识别行为时间模式</li>
+<li><strong>异常检测：</strong>发现特殊行为模式</li>
+</ul>
+</div>
+<div class="example-box">
+<h3>行为预测</h3>
+<ul>
+<li>应用机器学习算法预测用户行为</li>
+<li>根据历史行为预测未来行为趋势</li>
+<li>识别用户群体和细分市场特征</li>
+</ul>
+</div>
+<div class="practice-box">
+<h3>用户画像创建</h3>
+<p>根据分析结果创建详细的用户画像，包括行为习惯、偏好和需求特征。</p>
+</div>
+</div>
+<!-- 7. 案例总述：重庆轨道车辆 -->
+<div class="slide">
+<div class="slide-title-container"><img alt="Arrow" class="slide-title-icon" src="../Pic/左上箭头.png"/><h1>案例总述：重庆轨道车辆工业设计</h1></div>
+<div class="content-box">
+<h2>案例背景</h2>
+<p>以重庆市轨道车辆工业设计为目标，要求在车辆外观设计中体现所在城市的地域特征。</p>
+</div>
+<div class="highlight-box">
+<h3>重庆特色</h3>
+<ul>
+<li>西南地区综合交通枢纽</li>
+<li>丰富多彩的地域文化资源</li>
+<li>得天独厚的自然地形条件</li>
+<li>新一代网红城市，网络数据丰富</li>
+</ul>
+</div>
+<div class="example-box">
+<h3>研究方法</h3>
+<p>将与地域特征相关的网络评论作为研究材料，提取重庆地域特征词汇，再与本地特征形象进行映射，提取视觉特征，并应用于车辆外观工业设计中。</p>
+</div>
+</div>
+<!-- 8. 特征词汇提取 -->
+<div class="slide">
+<div class="slide-title-container"><img alt="Arrow" class="slide-title-icon" src="../Pic/左上箭头.png"/><h1>特征词汇提取</h1></div>
+<div class="content-box">
+<h2>数据采集</h2>
+<p>选取微博、知乎、蚂蚁窝旅游三个网站作为特征词采集平台，通过遍历"重庆印象"、"重庆旅游"、"重庆是怎样的城市"等相关话题。</p>
+</div>
+<div class="example-box">
+<h3>文本预处理示例</h3>
+<p><strong>原文：</strong>重庆不仅在那些光鲜亮丽的钢筋水泥和璀璨灯火里，还在三峡两岸的崇山峻岭之中。</p>
+<p><strong>处理后：</strong>过滤停用词，替换书面词汇为通俗词汇（如"璀璨灯火"→"繁华"）</p>
+</div>
+<div class="highlight-box">
+<h3>TF-IDF权重排序结果</h3>
+<table class="comparison-table">
+<thead>
+<tr>
+<th>特征词汇</th>
+<th>权重值</th>
+<th>语义类别</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>山城</td>
+<td>0.871</td>
+<td>地理特征</td>
+</tr>
+<tr>
+<td>多维空间</td>
+<td>0.758</td>
+<td>空间特征</td>
+</tr>
+<tr>
+<td>魔幻</td>
+<td>0.756</td>
+<td>文化特征</td>
+</tr>
+<tr>
+<td>麻辣</td>
+<td>0.588</td>
+<td>饮食特征</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- 9. 地域特征基元选取 -->
+<div class="slide">
+<div class="slide-title-container"><img alt="Arrow" class="slide-title-icon" src="../Pic/左上箭头.png"/><h1>地域特征基元选取</h1></div>
+<div class="content-box">
+<h2>特征基元分类</h2>
+<ul>
+<li><strong>基元1：</strong>奇趣水墨山城，风味热辣雾都 (4.085)</li>
+<li><strong>基元2：</strong>魔幻赛博朋克，东方奇想世界 (2.155)</li>
+<li><strong>基元3：</strong>山中江湖儿女，市井烟火人 (0.888)</li>
+</ul>
+</div>
+<div class="highlight-box">
+<h3>选定基元</h3>
+<p>选取"魔幻赛博朋克，东方奇想世界"地域特征基元为设计对象，以"魔幻"、"赛博朋克"、"繁华"、"洪崖洞"、"多维空间"作为最终的地域特征词。</p>
+</div>
+<div class="practice-box">
+<h3>图解语义提取</h3>
+<p>对图解图片分别作关于形态、色彩、图纹等元素的提取，参考高量值图解语义结果用于城轨列车的涂装与造型。</p>
+</div>
+</div>
+<!-- 10. 设计转换与效果 -->
+<div class="slide">
+<div class="slide-title-container"><img alt="Arrow" class="slide-title-icon" src="../Pic/左上箭头.png"/><h1>设计转换与效果</h1></div>
+<div class="content-box">
+<h2>重庆轻轨列车外观设计</h2>
+<img alt="重庆轻轨列车地域特征转换设计" src="图片库/图4-23 地域特征转换设计.jpg" style="width:100%; max-width:960px;"/>
+</div>
+<div class="example-box">
+<h3>设计应用</h3>
+<ul>
+<li>将元素提取结果应用在列车的造型和涂装上</li>
+<li>通过反复迭代与评估，形成最终的设计方案</li>
+<li>体现重庆"魔幻赛博朋克"的地域特色</li>
+</ul>
+</div>
+<div class="practice-box">
+<h3>设计价值</h3>
+<ul>
+<li>数据驱动的地域文化表达</li>
+<li>用户认知与设计元素的精准匹配</li>
+<li>传统设计方法与大数据技术的融合</li>
+<li>为城市形象设计提供科学依据</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="navigation">
+<button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">← 上一页</button>
+<button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">下一页 →</button>
+</div>
+</div>
+<script>
         let currentSlide = 0;
         const slides = document.querySelectorAll('.slide');
         const totalSlides = slides.length;
